@@ -1,8 +1,9 @@
 ﻿
+using JNetworking;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Health : MonoBehaviour
+public class Health : NetBehaviour
 {
     private HealthPart[] parts;
     private Dictionary<Collider2D, HealthPart> c2h;

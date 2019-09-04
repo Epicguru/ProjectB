@@ -1,10 +1,11 @@
 ﻿
 using System;
+using UnityEngine;
 
 namespace JNetworking
 {
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
-    public class SyncVarAttribute : Attribute
+    public class SyncVarAttribute : PropertyAttribute
     {
         /// <summary>
         /// Set to the name of a public method to invoke the method when the syncvar recieves a new value from

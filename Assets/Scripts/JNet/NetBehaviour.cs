@@ -8,6 +8,9 @@ using UnityEngine;
 
 namespace JNetworking
 {
+    /// <summary>
+    /// The base class for all script components that want to use high level networking features such as sync vars.
+    /// </summary>
     [RequireComponent(typeof(NetObject))]
     public abstract class NetBehaviour : MonoBehaviour
     {
