@@ -17,7 +17,8 @@ public class VehicleNavigation : MonoBehaviour
     }
     private VehicleMovement _movement;
 
-    public List<PNode> Targets;
+    [System.NonSerialized]
+    public List<PNode> Targets = new List<PNode>();
 
     public float PointReachedDistance = 2f;
 
@@ -29,24 +30,32 @@ public class VehicleNavigation : MonoBehaviour
     public float TorqueForce = 100f;
     public float TorqueAngleMax = 90f;
 
+    private bool reachedEnd;
+    private Vector2 finalTarget;
+
     private void Update()
     {
         if (Input.GetMouseButtonDown(0))
         {
+            finalTarget = InputManager.MousePos;
             var start = Navigation.GetClosestTile(transform.position);
-            var end = Navigation.GetClosestTile(InputManager.MousePos);
+            var end = Navigation.GetClosestTile(finalTarget);
             var result = new Pathfinding().Run(start.x, start.y, end.x, end.y, Navigation.Instance, Targets);
-            Debug.Log(result);
+            if(result != PathfindingResult.SUCCESSFUL)
+            {
+                Debug.LogWarning($"Pathfinding result: {result}");
+            }
+            reachedEnd = false;
         }
 
-        if(Targets == null || Targets.Count == 0)
+        if(Targets == null || (Targets.Count == 0 && reachedEnd))
         {
             Movement.ForwardsThrust = 0f;
             Movement.Torque = 0f;
         }
         else
         {
-            Vector2 point = Navigation.GetWorldPos(Targets[0]);
+            Vector2 point = Targets.Count != 0 ? Navigation.GetWorldPos(Targets[0]) : finalTarget;
             if (point.DistanceCheck(transform.position, PointReachedDistance))
             {
                 if (Targets.Count > 1)
@@ -56,7 +65,14 @@ public class VehicleNavigation : MonoBehaviour
                 }
                 else
                 {
-                    Targets.Clear();
+                    if(Targets.Count == 0)
+                    {
+                        reachedEnd = true;
+                    }
+                    else
+                    {
+                        Targets.Clear();
+                    }
                 }
             }
             Vector2 currentPos = transform.position;
@@ -93,6 +109,11 @@ public class VehicleNavigation : MonoBehaviour
                 Gizmos.color = Color.magenta;
                 Gizmos.DrawWireSphere(Navigation.GetWorldPos(point), PointReachedDistance);
             }
+        }
+        if (!reachedEnd)
+        {
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawCube(finalTarget, Vector3.one * 0.5f);
         }
     }
 }

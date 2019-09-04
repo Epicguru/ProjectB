@@ -308,6 +308,9 @@ namespace JNetworking
             return msg;
         }
 
+        /// <summary>
+        /// Sends a custom message created by the client to the server.
+        /// </summary>
         public static NetSendResult SendCustomMessageToServer(NetOutgoingMessage msg, NetDeliveryMethod delivery = NetDeliveryMethod.ReliableOrdered, int sequenceChannel = 31)
         {
             if (!IsClient || ClientConnectonStatus != NetConnectionStatus.Connected)
@@ -325,6 +328,9 @@ namespace JNetworking
             return Client.Send(msg, delivery, sequenceChannel);
         }
 
+        /// <summary>
+        /// Sends a custom message created by the server to a particlar connected client.
+        /// </summary>
         public static NetSendResult SendCustomMessageToClient(NetConnection n, NetOutgoingMessage msg, NetDeliveryMethod delivery = NetDeliveryMethod.ReliableOrdered, int sequenceChannel = 31)
         {
             if (!IsServer)
@@ -346,6 +352,36 @@ namespace JNetworking
             }
 
             return Server.SendMessage(msg, n, delivery, sequenceChannel);
+        }
+
+        /// <summary>
+        /// Sends a custom message created by the server to all connected clients, optionally excluding one client.
+        /// The 'except' client may be null to send to all.
+        /// </summary>
+        public static NetSendResult SendCustomMessageToAll(NetConnection except, NetOutgoingMessage msg, NetDeliveryMethod delivery = NetDeliveryMethod.ReliableOrdered, int sequenceChannel = 31)
+        {
+            if (!IsServer)
+            {
+                Error("Server not running, cannot send custom message.");
+                return NetSendResult.FailedNotConnected;
+            }
+
+            if (msg == null)
+            {
+                Error("Null custom message.");
+                return NetSendResult.Dropped;
+            }
+
+            if(except == null)
+            {
+                Server.SendToAll(msg, delivery, sequenceChannel);
+                return NetSendResult.Sent;
+            }
+            else
+            {
+                Server.SendToAllExcept(except, msg, delivery, sequenceChannel);
+                return NetSendResult.Sent;
+            }
         }
 
         public static NetOutgoingMessage CreateCombinedMessage(NetOutgoingMessage a, NetOutgoingMessage b, bool fromServer)

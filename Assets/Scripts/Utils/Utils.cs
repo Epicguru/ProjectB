@@ -1,5 +1,6 @@
 ﻿
 
+using ThreadedPathfinding;
 using UnityEngine;
 
 public static class Utils

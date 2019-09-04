@@ -1,4 +1,5 @@
 ﻿
+using JNetworking;
 using UnityEngine;
 
 public class ProjectileSpawn : EditorTool
@@ -23,6 +24,9 @@ public class ProjectileSpawn : EditorTool
         if (!IsEnabled)
             return;
 
+        if (!JNet.IsServer)
+            return;
+
         if (Input.GetKeyDown(KeyCode.Space))
         {
             startPos = InputManager.MousePos;
@@ -32,10 +36,12 @@ public class ProjectileSpawn : EditorTool
             Vector2 direction = InputManager.MousePos - startPos;
             direction.Normalize();
 
-            Projectile p = PoolObject.Spawn(Projectile);
-            p.transform.position = startPos;
-            p.Direction = direction;
-            p.Speed = Speed;
+            Projectile.Spawn(startPos, direction, Speed);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            Projectile.Spawn(new Vector2(0f, -10f), Vector2.up, 15f);
         }
     }
 }

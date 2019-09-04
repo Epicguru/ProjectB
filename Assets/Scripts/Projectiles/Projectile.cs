@@ -1,4 +1,6 @@
 ﻿
+using JNetworking;
+using Lidgren.Network;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -55,24 +57,25 @@ public class Projectile : MonoBehaviour
     [Range(0f, 20f)]
     public float TracerLength = 5f;
 
+    [Header("Sync")]
+    public int Seed = 0;
+
     [Header("Debug")]
     public bool PathTraceEnabled = false;
     [Range(0, 30)]
     public int PathTraceIdleInterval = 5;
     public bool RemainAfterDeath = false;
 
-    public Transform Shooter { get; set; }
-    public string WeaponName { get; set; }
-
+    private static readonly RaycastHit2D[] hits = new RaycastHit2D[MAX_HITS];
     private const int MAX_TRACE_POINTS = 1000;
+    private const int MAX_HITS = 50;
+    private PredictableRandom random;
     private List<Vector2> pathTrace;
     private List<Collider2D> penetratedColliders = new List<Collider2D>();
     private int traceTimer;
     private int remainingReflections = 0;
     private bool destroyed = false;
     private float currentPenetrationPower;
-    private const int MAX_HITS = 50;
-    private static readonly RaycastHit2D[] hits = new RaycastHit2D[MAX_HITS];
 
     private void UponSpawn()
     {
@@ -90,14 +93,16 @@ public class Projectile : MonoBehaviour
 
     private void UponDespawn()
     {
-        Shooter = null;
-        WeaponName = null;
+        random = null;
     }
 
     private void LateUpdate()
     {
         if (destroyed)
             return;
+
+        if (random == null)
+            random = new PredictableRandom(Seed);
 
         UpdateTracer();
 
@@ -156,7 +161,7 @@ public class Projectile : MonoBehaviour
 
                 if (!canPenetrate)
                 {
-                    float baseRefRoll = Random.value;
+                    float baseRefRoll = random.GetValue();
 
                     float chance = BaseReflectionChance * surfaceData.GetReflectionChance();
 
@@ -226,12 +231,12 @@ public class Projectile : MonoBehaviour
                     if (PenetrationSkew.y != 0f)
                     {
                         float current = dir.ToAngle();
-                        float randomValue = Random.value;
-                        bool positive = Random.value <= 0.5f;
+                        float randomValue = random.GetValue();
+                        bool positive = random.GetValue() <= 0.5f;
                         float min = PenetrationSkew.x / 2f;
                         float max = PenetrationSkew.y / 2f;
-                        float random = Mathf.Lerp(min, max, randomValue) * (positive ? 1f : -1f);
-                        dir = (current + random).ToDirection();
+                        float rand = Mathf.Lerp(min, max, randomValue) * (positive ? 1f : -1f);
+                        dir = (current + rand).ToDirection();
                     }
                     anyProcessed = true;
 
@@ -544,5 +549,50 @@ public class Projectile : MonoBehaviour
             return collider.isTrigger ? MonoCollisionSurface.DefaultTrigger : MonoCollisionSurface.DefaultSolid;
         else
             return data;
+    }
+
+    // SPAWNING & NETWORKING
+
+    public static Projectile Spawn(Vector2 position, Vector2 direction, float speed)
+    {
+        if (!JNet.IsServer)
+        {
+            Debug.LogError("Cannot spawn projectile when not on server.");
+            return null;
+        }
+
+        int seed = Random.Range(0, int.MaxValue);
+        var spawned = SpawnLocal(position, direction, speed, seed);
+
+        var msg = JNet.CreateCustomMessage(true, CustomMsg.PROJECTILE_SPAWN, 32);
+        msg.Write(position);
+        msg.Write(direction);
+        msg.Write(speed);
+        msg.Write(spawned.Seed);
+        JNet.SendCustomMessageToAll(JNet.GetServer().LocalClientConnection, msg, Lidgren.Network.NetDeliveryMethod.ReliableUnordered, 0);
+
+        return spawned;
+    }
+
+    private static Projectile SpawnLocal(Vector2 position, Vector2 direction, float speed, int seed)
+    {
+        var spawned = PoolObject.Spawn(Spawnables.Get<Projectile>("Standard Projectile"));
+
+        spawned.transform.position = position;
+        spawned.Direction = direction;
+        spawned.Speed = speed;
+        spawned.Seed = seed;
+
+        return spawned;
+    }
+
+    public static void ProcessMessage(NetIncomingMessage msg)
+    {
+        Vector2 pos = msg.ReadVector2();
+        Vector2 dir = msg.ReadVector2();
+        float speed = msg.ReadFloat();
+        int seed = msg.ReadInt32();
+
+        SpawnLocal(pos, dir, speed, seed);
     }
 }
