@@ -43,7 +43,7 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: adcf3df6a4c50f14ea6079572ad6e9b8, type: 3}
-    totalSpriteSurfaceArea: 1461918
+    totalSpriteSurfaceArea: 1470078
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -52,12 +52,15 @@ SpriteAtlas:
   - {fileID: 21300000, guid: c437fd619d7085140b07dbce1697fc14, type: 3}
   - {fileID: 21300000, guid: 1de31da1b2df9084c966762f584f7b55, type: 3}
   - {fileID: 21300000, guid: b0502e82e7908bc46a4520cd5eba5176, type: 3}
+  - {fileID: 21300000, guid: 85aeb6937178572429ca020ccd9902e7, type: 3}
   - {fileID: 21300000, guid: af75e0a3f7002224c9a9fa2198e75a94, type: 3}
   - {fileID: 21300000, guid: eb3631b3a3681fe49af87db909f75d84, type: 3}
+  - {fileID: 21300000, guid: 0fe6bdb3abff4124d8572d0fe6f120e4, type: 3}
   - {fileID: 21300000, guid: c47d41d3e3c79004e9dcbcb9b3c6ef21, type: 3}
   - {fileID: 21300000, guid: 08c02d145a0698746be735465e54d717, type: 3}
   - {fileID: 21300000, guid: d729bb24ca650114685a882b08c5bfc6, type: 3}
   - {fileID: 21300000, guid: 7b231df5a6828f44aa993d3886a79d0c, type: 3}
+  - {fileID: 21300000, guid: 4ac04c366624e794481cdfb4216c1cf9, type: 3}
   - {fileID: 21300000, guid: b975c4c63001b0a478d25783de549f0f, type: 3}
   - {fileID: 21300000, guid: 10d8fad6cb195b043b4cd345220c543d, type: 3}
   - {fileID: 21300000, guid: 823ce837f31770d4a92284e52e41ce11, type: 3}
@@ -71,9 +74,12 @@ SpriteAtlas:
   - {fileID: 21300000, guid: dc3f284a75a53fe45bc655f7a1c6ff20, type: 3}
   - {fileID: 21300000, guid: 7306ff8a290af924097fbbd4a9f808df, type: 3}
   - {fileID: 21300000, guid: 63a5421cb3bd5df43b43dd2ac409b2c9, type: 3}
+  - {fileID: 21300000, guid: 0776ef8c20ea39a49a9e11a29c59a2a2, type: 3}
   - {fileID: 21300000, guid: c1e1f67dc75299a46a85c43bd03e1322, type: 3}
   - {fileID: 21300000, guid: 3b8cb49db894d0440800f043df09a656, type: 3}
+  - {fileID: 21300000, guid: c55bd5fd934f78a498390da23d8942a9, type: 3}
   - {fileID: 21300000, guid: 62df9aeecbd8f0c40bf9a29225e6407e, type: 3}
+  - {fileID: 21300000, guid: dfa279afdc0e7be488a333acd2564dbb, type: 3}
   - {fileID: 21300000, guid: a913d4ff7da80714ead03f32ff1ef2fd, type: 3}
   m_PackedSpriteNamesToIndex:
   - ADS Top
@@ -81,12 +87,15 @@ SpriteAtlas:
   - BB Gun Small
   - Auto Cannon Base
   - Standard Projectile
+  - Minigun Top Back
   - BB Back Bridge
   - Auto Cannon Barrel
+  - Minigun Top
   - Coast Crawler Storage
   - Coast Crawler Gun Mount
   - Auto Cannon Details
   - BB Missile Launchers
+  - Minigun Base
   - Control
   - Coast Crawler Details
   - BB Front Bridge Tower
@@ -100,9 +109,12 @@ SpriteAtlas:
   - BB Details
   - BB Back Bridge Addons
   - Coast Crawler Hull
+  - Minigun Chain Detail
   - ADS Field
   - Coast Crawler Boxes
+  - Minigun Chain Inner
   - Coast Crawler Control
+  - Minigun Chain Lines
   - ADS Base
   m_Tag: Vehicles Atlas
   m_IsVariant: 0

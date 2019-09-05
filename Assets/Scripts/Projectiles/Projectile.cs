@@ -9,6 +9,7 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class Projectile : MonoBehaviour
 {
+    [GameVar(Name = "ProjectileSpeed")]
     public static float SpeedMultiplier = 1f;
 
     public PoolObject PoolObject
@@ -114,6 +115,8 @@ public class Projectile : MonoBehaviour
             LogPath();
 
         UpdateTracer();
+
+        transform.localEulerAngles = new Vector3(0f, 0f, this.Direction.ToAngle());
     }
 
     private (Vector2 newPos, Vector2 newDir) Step(Vector2 start, Vector2 dir, float distance)

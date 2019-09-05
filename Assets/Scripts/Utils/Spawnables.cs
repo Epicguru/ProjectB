@@ -54,6 +54,32 @@ public class Spawnables : MonoBehaviour
         Instance.NetRegister();
     }
 
+    [Command("Spawns a spawnable object. Only works on the server. The object is pooled if available.")]
+    public static string Spawn(string name, float f)
+    {
+        var obj = Get<GameObject>(name);
+        if(obj == null)
+        {
+            return $"{name} is not a GameObject, so cannot be spawned into world.";
+        }
+
+        Vector2 pos = GameCamera.Camera.transform.position;
+
+        var pool = obj.GetComponent<PoolObject>();
+        if(pool == null)
+        {
+            var spawned = Instantiate(obj);
+            spawned.transform.position = pos;
+        }
+        else
+        {
+            var spawned = PoolObject.Spawn(pool);
+            spawned.transform.position = pos;
+        }
+
+        return null;
+    }
+
     public Object[] Objects;
     public Dictionary<string, Object> map;
     public Dictionary<ushort, AutoDestroy> autoDestroyMap;
