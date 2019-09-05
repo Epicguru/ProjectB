@@ -36,7 +36,7 @@ public class VehicleNavigation : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && !InputManager.IsMouseInUI)
         {
             finalTarget = InputManager.MousePos;
             var start = Navigation.GetClosestTile(transform.position);

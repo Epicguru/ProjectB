@@ -44,6 +44,24 @@ TagManager:
   - name: Vehicles
     uniqueID: 1973147011
     locked: 0
+  - name: Buildings
+    uniqueID: 2887256073
+    locked: 0
   - name: Effects
     uniqueID: 3984919945
+    locked: 0
+  - name: Unused0
+    uniqueID: 3192542831
+    locked: 0
+  - name: Unused1
+    uniqueID: 3255959073
+    locked: 0
+  - name: Unused2
+    uniqueID: 571630241
+    locked: 0
+  - name: Unused3
+    uniqueID: 314807403
+    locked: 0
+  - name: Unused4
+    uniqueID: 3137604875
     locked: 0

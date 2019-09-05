@@ -242,7 +242,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a12a90a90c0910141bbcbc5794b30f81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _id: 15760
+  _id: 15768
   UponSpawn:
     m_PersistentCalls:
       m_Calls: []
@@ -271,7 +271,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   Damage: 10
-  PenetrationPower: 2
+  PenetrationPower: 5
   PenetrationPenalty: 0.2
   PenetrationSkew: {x: 10, y: 40}
   BaseReflectionChance: 1
@@ -280,6 +280,7 @@ MonoBehaviour:
   HitEffectPrefab: {fileID: 0}
   Tracer: {fileID: 5031809783676560275}
   TracerLength: 15
+  Seed: 0
   PathTraceEnabled: 1
   PathTraceIdleInterval: 5
   RemainAfterDeath: 0

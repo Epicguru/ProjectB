@@ -75,6 +75,11 @@ public class Health : NetBehaviour
         return id2h[id];
     }
 
+    public HealthPart[] GetAllHealthParts()
+    {
+        return parts;
+    }
+
     public float GetSumHealth()
     {
         float sum = 0f;

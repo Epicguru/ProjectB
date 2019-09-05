@@ -1,12 +1,17 @@
 ﻿
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 [DefaultExecutionOrder(-100)]
 public class InputManager : MonoBehaviour
 {
     public static Vector2 MousePos { get; private set; }
     public static Bounds CameraBounds { get; private set; }
+    public static bool IsMouseInUI { get; private set; }
+
+
     public Camera Camera;
+    public EventSystem Events;
 
     private void Update()
     {
@@ -19,5 +24,7 @@ public class InputManager : MonoBehaviour
         b.min = min;
         b.max = max;
         CameraBounds = b;
+
+        IsMouseInUI = Events.IsPointerOverGameObject();
     }
 }

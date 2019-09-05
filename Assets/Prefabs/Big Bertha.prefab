@@ -91,6 +91,8 @@ GameObject:
   m_Component:
   - component: {fileID: 853404951116398174}
   - component: {fileID: 853404951116398175}
+  - component: {fileID: 1246206036}
+  - component: {fileID: 1246206037}
   m_Layer: 0
   m_Name: Missiles
   m_TagString: Untagged
@@ -138,6 +140,43 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.9364283, y: 1.7468815}
   m_EdgeRadius: 0
+--- !u!114 &1246206036
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 853404951116398169}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a733981ceb01974bb7f2cf0d3665559, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Enabled: 1
+  Penetrable: 1
+  Toughness: 1
+  HitEffect: {fileID: 0}
+  ReflectionChance: 1
+  AutoGetHealth: 1
+  Health: {fileID: 0}
+--- !u!114 &1246206037
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 853404951116398169}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec1a14525c6f69d40b8f18d59580c400, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: Missile Silos
+  ID: 3
+  Collider: {fileID: 853404951116398175}
+  IsVital: 0
+  MaxHealth: 100
+  Health: 100
 --- !u!1 &853404951126555909
 GameObject:
   m_ObjectHideFlags: 0
@@ -310,6 +349,8 @@ GameObject:
   m_Component:
   - component: {fileID: 853404951208020541}
   - component: {fileID: 853404951208020530}
+  - component: {fileID: 1320179314}
+  - component: {fileID: 1320179315}
   m_Layer: 0
   m_Name: Bridge
   m_TagString: Untagged
@@ -357,6 +398,43 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 2.248504, y: 1.2471671}
   m_EdgeRadius: 0
+--- !u!114 &1320179314
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 853404951208020540}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a733981ceb01974bb7f2cf0d3665559, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Enabled: 1
+  Penetrable: 1
+  Toughness: 1
+  HitEffect: {fileID: 0}
+  ReflectionChance: 0.3
+  AutoGetHealth: 1
+  Health: {fileID: 0}
+--- !u!114 &1320179315
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 853404951208020540}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec1a14525c6f69d40b8f18d59580c400, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: Bridge
+  ID: 2
+  Collider: {fileID: 853404951208020530}
+  IsVital: 0
+  MaxHealth: 200
+  Health: 200
 --- !u!1 &853404951352897828
 GameObject:
   m_ObjectHideFlags: 0
@@ -573,6 +651,8 @@ GameObject:
   m_Component:
   - component: {fileID: 853404951550969850}
   - component: {fileID: 853404951550969851}
+  - component: {fileID: 1768169263}
+  - component: {fileID: 1768169264}
   m_Layer: 0
   m_Name: Hull
   m_TagString: Untagged
@@ -629,6 +709,43 @@ PolygonCollider2D:
       - {x: 7.3481517, y: -0.71885675}
       - {x: 9.99742, y: -0.30670005}
       - {x: 9.999471, y: 0.31544372}
+--- !u!114 &1768169263
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 853404951550969797}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a733981ceb01974bb7f2cf0d3665559, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Enabled: 1
+  Penetrable: 1
+  Toughness: 2
+  HitEffect: {fileID: 0}
+  ReflectionChance: 2
+  AutoGetHealth: 1
+  Health: {fileID: 0}
+--- !u!114 &1768169264
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 853404951550969797}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec1a14525c6f69d40b8f18d59580c400, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: Hull
+  ID: 0
+  Collider: {fileID: 853404951550969851}
+  IsVital: 1
+  MaxHealth: 1000
+  Health: 1000
 --- !u!1 &853404951564738262
 GameObject:
   m_ObjectHideFlags: 0
@@ -720,6 +837,8 @@ GameObject:
   m_Component:
   - component: {fileID: 853404951625451869}
   - component: {fileID: 853404951625451858}
+  - component: {fileID: 261957676}
+  - component: {fileID: 261957677}
   m_Layer: 0
   m_Name: Cannon
   m_TagString: Untagged
@@ -757,6 +876,43 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.67
+--- !u!114 &261957676
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 853404951625451868}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a733981ceb01974bb7f2cf0d3665559, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Enabled: 1
+  Penetrable: 1
+  Toughness: 0.7
+  HitEffect: {fileID: 0}
+  ReflectionChance: 1.2
+  AutoGetHealth: 1
+  Health: {fileID: 0}
+--- !u!114 &261957677
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 853404951625451868}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec1a14525c6f69d40b8f18d59580c400, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: Front Cannon
+  ID: 3
+  Collider: {fileID: 853404951625451858}
+  IsVital: 0
+  MaxHealth: 150
+  Health: 150
 --- !u!1 &853404951628175481
 GameObject:
   m_ObjectHideFlags: 0
@@ -1507,10 +1663,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfd8c880777dc4144b6f912433a2867c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PointReachedDistance: 10
-  ThrustForce: 5000
-  ThrustDecreaseDistance: 20
-  TorqueForce: 1000
+  PointReachedDistance: 20
+  ThrustForce: 11000
+  ThrustDecreaseDistance: 10
+  TorqueForce: 100000
   TorqueAngleMax: 90
 --- !u!114 &853404952110498705
 MonoBehaviour:
@@ -2106,6 +2262,8 @@ GameObject:
   m_Component:
   - component: {fileID: 853404952620106827}
   - component: {fileID: 853404952620106824}
+  - component: {fileID: 1547148809}
+  - component: {fileID: 1547148810}
   m_Layer: 0
   m_Name: Engine
   m_TagString: Untagged
@@ -2153,6 +2311,43 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 2.6765623, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &1547148809
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 853404952620106826}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a733981ceb01974bb7f2cf0d3665559, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Enabled: 1
+  Penetrable: 1
+  Toughness: 1.5
+  HitEffect: {fileID: 0}
+  ReflectionChance: 1
+  AutoGetHealth: 1
+  Health: {fileID: 0}
+--- !u!114 &1547148810
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 853404952620106826}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec1a14525c6f69d40b8f18d59580c400, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: Engine
+  ID: 1
+  Collider: {fileID: 853404952620106824}
+  IsVital: 1
+  MaxHealth: 200
+  Health: 200
 --- !u!1 &853404952644329267
 GameObject:
   m_ObjectHideFlags: 0

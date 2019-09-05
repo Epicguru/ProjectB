@@ -74,14 +74,14 @@ public class PoolObject : MonoBehaviour
         if (fromPool == null)
         {
             var sp = CreateNew(prefab);
-            sp.transform.parent = null;
+            sp.transform.SetParent(null, false);
             sp.gameObject.SetActive(true);
             sp.InvokeUponSpawn();
             return sp;
         }
         else
         {
-            fromPool.transform.parent = null;
+            fromPool.transform.parent.SetParent(null, false);
             fromPool.gameObject.SetActive(true);
             fromPool.InvokeUponSpawn();
             return fromPool;
@@ -123,7 +123,7 @@ public class PoolObject : MonoBehaviour
             return;
 
         AddToPool(obj);
-        obj.transform.parent = GetParent();
+        obj.transform.SetParent(GetParent(), false);
         obj.InvokeUponDespawn();
         obj.gameObject.SetActive(false);
     }
