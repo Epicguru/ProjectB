@@ -429,38 +429,30 @@ public class CommandUI : MonoBehaviour
                 var c = Commands[command];
                 if (c.HasStringReturn)
                 {
-                    int expected = c.Method.GetParameters().Length;
-                    if (args.Length != expected)
+                    try
                     {
-                        LogText(RichText.InColour($"Incorrect number of arguments. Expected {expected}, got {args.Length}", Color.yellow));
-                    }
-                    else
-                    {
-                        try
+                        object[] realArgs = MakeArgs(c.ArgTypes, args, out string error);
+                        if (error != null)
                         {
-                            object[] realArgs = MakeArgs(c.ArgTypes, args, out string error);
-                            if(error != null)
+                            LogText(RichText.InColour(error, Color.yellow));
+                        }
+                        else
+                        {
+                            var r = c.Method.Invoke(null, realArgs);
+                            if (c.HasStringReturn && !string.IsNullOrWhiteSpace(r as string))
                             {
-                                LogText(RichText.InColour(error, Color.yellow));
+                                LogBoxText(r as string);
                             }
                             else
                             {
-                                var r = c.Method.Invoke(null, realArgs);
-                                if (c.HasStringReturn && !string.IsNullOrWhiteSpace(r as string))
-                                {
-                                    LogBoxText(r as string);
-                                }
-                                else
-                                {
-                                    LogText(RichText.InColour("Run successfully", Color.green));
-                                }
-                            }                            
+                                LogText(RichText.InColour("Run successfully", Color.green));
+                            }
                         }
-                        catch(Exception e)
-                        {
-                            LogText(RichText.InColour($"Exception when running command '{command}':\n{e}", Color.yellow));
-                        }
-                    }                    
+                    }
+                    catch (Exception e)
+                    {
+                        LogText(RichText.InColour($"Exception when running command '{command}':\n{e}", Color.yellow));
+                    }
                 }
             }
             else

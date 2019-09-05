@@ -33,6 +33,7 @@ namespace Converters
                 return null;
             }
 
+            error = null;
             return new Vector2(x, y);
         }
     }

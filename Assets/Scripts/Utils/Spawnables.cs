@@ -54,8 +54,8 @@ public class Spawnables : MonoBehaviour
         Instance.NetRegister();
     }
 
-    [Command("Spawns a spawnable object. Only works on the server. The object is pooled if available.")]
-    public static string Spawn(string name, float f)
+    [Command("[SERVER] Spawns a spawnable object at the position.")]
+    public static string Spawn(string name, Vector2 pos)
     {
         var obj = Get<GameObject>(name);
         if(obj == null)
@@ -63,21 +63,35 @@ public class Spawnables : MonoBehaviour
             return $"{name} could not be found or is not a GameObject, so cannot be spawned into world.";
         }
 
-        Vector2 pos = GameCamera.Camera.transform.position;
-
         var pool = obj.GetComponent<PoolObject>();
         if(pool == null)
         {
             var spawned = Instantiate(obj);
             spawned.transform.position = pos;
+
+            var net = spawned.GetComponent<NetObject>();
+            if(net != null)
+            {
+                JNet.Spawn(net);
+                return "Spawned as networked object.";
+            }
+            else
+            {
+                return "Spawned as client-only prefab.";
+            }
         }
         else
         {
             var spawned = PoolObject.Spawn(pool);
             spawned.transform.position = pos;
+            return "Spawed as pooled object.";
         }
+    }
 
-        return null;
+    [Command("[SERVER] Spawns a spawnable object at the center of the view.")]
+    public static string SpawnHere(string name)
+    {
+        return Spawn(name, GameCamera.Camera.transform.position);
     }
 
     public Object[] Objects;
