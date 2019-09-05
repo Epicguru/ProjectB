@@ -27,7 +27,7 @@ public class Spawnables : MonoBehaviour
             }
             else
             {
-                return null;
+                return obj as T;
             }
         }
         else
@@ -60,7 +60,7 @@ public class Spawnables : MonoBehaviour
         var obj = Get<GameObject>(name);
         if(obj == null)
         {
-            return $"{name} is not a GameObject, so cannot be spawned into world.";
+            return $"{name} could not be found or is not a GameObject, so cannot be spawned into world.";
         }
 
         Vector2 pos = GameCamera.Camera.transform.position;

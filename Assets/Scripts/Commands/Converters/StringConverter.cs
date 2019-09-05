@@ -5,20 +5,21 @@ namespace Converters
 {
     public class StringConverter : VarConverter
     {
-        public StringConverter() : base(typeof(string))
+        public StringConverter() : base(typeof(string), 1)
         {
 
         }
 
-        public override string Write(object instance, FInfo i, string[] args)
+        public override object Convert(string[] args, out string error)
         {
             if(args.Length != 1)
             {
-                return $"Writing {Type.Name}: Expected 1 arg, got {args.Length}.";
+                error = $"Writing {Type.Name}: Expected 1 arg, got {args.Length}.";
+                return null;
             }
 
-            i.SetValue(instance, args[0]);
-            return null;
+            error = null;
+            return args[0];
         }
     }
 }

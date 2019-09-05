@@ -1,4 +1,5 @@
 ﻿
+using System;
 using System.Reflection;
 using System.Text;
 
@@ -6,10 +7,11 @@ public class Command
 {
     private static StringBuilder str = new StringBuilder();
 
-    public string Name { get; private set; }
-    public CommandAttribute Attribute { get; private set; }
-    public MethodInfo Method { get; private set; }
-    public string ParamsString;
+    public string Name { get; }
+    public CommandAttribute Attribute { get; }
+    public MethodInfo Method { get; }
+    public string ParamsString { get; }
+    public Type[] ArgTypes { get; }
 
     public bool HasStringReturn
     {
@@ -18,7 +20,6 @@ public class Command
             return Method.ReturnParameter != null && Method.ReturnParameter.ParameterType == typeof(string);
         }
     }
-
 
     public Command(CommandAttribute atr, MethodInfo method)
     {
@@ -31,10 +32,16 @@ public class Command
         Method = method;
 
         str.Clear();
+
         var paramz = method.GetParameters();
+        ArgTypes = new Type[paramz.Length];
+
         for(int i = 0; i < paramz.Length; i++)
         {
             var item = paramz[i];
+
+            ArgTypes[i] = item.ParameterType;
+
             str.Append(item.ParameterType.Name);
             str.Append(' ');
             str.Append(item.Name);

@@ -1,17 +1,17 @@
 ﻿
 using System;
-using System.Reflection;
 
 namespace Converters
 {
     public abstract class VarConverter
     {
         public Type Type { get; }
-        public FInfo Info { get; set; }
+        public int ExpectedArgCount { get; }
 
-        public VarConverter(Type type)
+        public VarConverter(Type type, int expectedArgCount)
         {
-            Type = type ?? throw new ArgumentNullException("type");
+            this.Type = type ?? throw new ArgumentNullException("type");
+            this.ExpectedArgCount = expectedArgCount <= 0 ? 1 : expectedArgCount;
         }
 
         public virtual string MakeString(object instance, FInfo i)
@@ -24,6 +24,21 @@ namespace Converters
             return i.GetValue(instance);
         }
 
-        public abstract string Write(object instance, FInfo i, string[] args);
+        public abstract object Convert(string[] args, out string error);
+
+        public virtual string Write(object instance, FInfo i, string[] args)
+        {
+            if (args.Length != ExpectedArgCount)
+            {
+                return $"Writing {Type.Name}: Expected {ExpectedArgCount} arg, got {args.Length}.";
+            }
+
+            object o = Convert(args, out string error);
+            if (error != null)
+                return error;
+
+            i.SetValue(instance, o);
+            return null;
+        }
     }
 }

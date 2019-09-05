@@ -1,4 +1,5 @@
 ﻿
+using Converters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,7 +51,7 @@ public class CommandUI : MonoBehaviour
     {
         LoadCommands();
 
-        Input = new IMGUIWindow(0, new Rect(10, 10, Width, Height), "Console", () =>
+        Input = new IMGUIWindow(0, new Rect(100, 100, Width, Height), "Console", () =>
         {
             var e = Event.current;
             if (e.type == EventType.KeyDown && e.keyCode == KeyCode.Return && !string.IsNullOrWhiteSpace(CurrentCommand))
@@ -155,19 +156,19 @@ public class CommandUI : MonoBehaviour
         // Partition on the type list initially.
         var def = typeof(CommandAttribute);
         var found = from t in a.GetTypes().AsParallel()
-                    let methods = t.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static)
+                    let methods = t.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance)
                     from m in methods
                     where m.IsDefined(def, true)
                     select new { Type = t, Method = m, Attribute = m.GetCustomAttribute<CommandAttribute>() };
 
         var gameVarDef = typeof(GameVarAttribute);
         var gameF = from t in a.GetTypes().AsParallel()
-                    let fields = t.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static)
+                    let fields = t.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance)
                     from f in fields
                     where f.IsDefined(gameVarDef, true)
                     select new { Type = t, Field = f, Attribute = f.GetCustomAttribute<GameVarAttribute>() };
         var gameP = from t in a.GetTypes().AsParallel()
-                    let properties = t.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static)
+                    let properties = t.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance)
                     from p in properties
                     where p.IsDefined(gameVarDef, true)
                     select new { Type = t, Property = p, Attribute = p.GetCustomAttribute<GameVarAttribute>() };
@@ -181,6 +182,17 @@ public class CommandUI : MonoBehaviour
         {
             var thing = new GameVar(gv.Attribute, null, gv.Property);
             GameVars.Add(thing.Name, thing);
+        }
+
+        for (int i = 0; i < GameVars.Count; i++)
+        {
+            var gv = GameVars.ElementAt(i).Value;
+            if (!gv.IsValid)
+            {
+                Debug.LogWarning($"{gv.Name} is not a valid game variable, ignoring.");
+                GameVars.Remove(gv.Name);
+                i--;
+            }
         }
 
         int count = 0;
@@ -350,7 +362,7 @@ public class CommandUI : MonoBehaviour
             {
                 var gv = GameVars[name];
 
-                if (gv.FInfo.IsStatic)
+                if (!gv.FInfo.IsStatic)
                 {
                     LogText(RichText.InColour($"Game var '{name}' is not static, which is currently not fully supported: cannot read or write.", Color.yellow));
                 }
@@ -361,25 +373,39 @@ public class CommandUI : MonoBehaviour
                         // TODO add support for non-static variables and commands.
                         if (args.Length == 0)
                         {
-                            // Read varaible...
-                            LogBoxText(gv.Converter.MakeString(null, gv.FInfo));
+                            if (gv.FInfo.CanRead)
+                            {
+                                // Read varaible...
+                                LogBoxText(gv.Converter.MakeString(null, gv.FInfo));
+                            }
+                            else
+                            {
+                                LogText(RichText.InColour($"That variable is a C# property, which is set to be write only.", Color.yellow));
+                            }
                         }
                         else
                         {
-                            // Write variable.
-                            string old = null;
-                            if (GVWriteCompare)
-                                old = gv.Converter.MakeString(null, gv.FInfo);
-                            string error = gv.Converter.Write(null, gv.FInfo, args);
-                            bool worked = error == null;
-                            if (!worked)
+                            if (gv.FInfo.CanWrite)
                             {
-                                LogText(RichText.InColour("Failed to write to variable:\n{error}", Color.yellow));
+                                // Write variable.
+                                string old = null;
+                                if (GVWriteCompare)
+                                    old = gv.Converter.MakeString(null, gv.FInfo);
+                                string error = gv.Converter.Write(null, gv.FInfo, args);
+                                bool worked = error == null;
+                                if (!worked)
+                                {
+                                    LogText(RichText.InColour("Failed to write to variable:\n{error}", Color.yellow));
+                                }
+                                else if (GVWriteCompare)
+                                {
+                                    string updated = gv.Converter.MakeString(null, gv.FInfo);
+                                    LogBoxText($"{old} -> {updated}");
+                                }
                             }
-                            else if (GVWriteCompare)
+                            else
                             {
-                                string updated = gv.Converter.MakeString(null, gv.FInfo);
-                                LogBoxText($"{old} -> {updated}");
+                                LogText(RichText.InColour($"That variable is a C# property, which is set to be read only.", Color.yellow));
                             }
                         }
                     }
@@ -412,19 +438,27 @@ public class CommandUI : MonoBehaviour
                     {
                         try
                         {
-                            var r = c.Method.Invoke(null, args);
-                            if (c.HasStringReturn && !string.IsNullOrWhiteSpace(r as string))
+                            object[] realArgs = MakeArgs(c.ArgTypes, args, out string error);
+                            if(error != null)
                             {
-                                LogBoxText(r as string);
+                                LogText(RichText.InColour(error, Color.yellow));
                             }
                             else
                             {
-                                LogText(RichText.InColour("Run successfully", Color.green));
-                            }
+                                var r = c.Method.Invoke(null, realArgs);
+                                if (c.HasStringReturn && !string.IsNullOrWhiteSpace(r as string))
+                                {
+                                    LogBoxText(r as string);
+                                }
+                                else
+                                {
+                                    LogText(RichText.InColour("Run successfully", Color.green));
+                                }
+                            }                            
                         }
                         catch(Exception e)
                         {
-                            LogText(RichText.InColour($"Exception when running command '{command}': {e}", Color.yellow));
+                            LogText(RichText.InColour($"Exception when running command '{command}':\n{e}", Color.yellow));
                         }
                     }                    
                 }
@@ -434,6 +468,52 @@ public class CommandUI : MonoBehaviour
                 LogText(RichText.InColour("Could not find that command!", Color.yellow));
             }
         }        
+    }
+
+    private object[] MakeArgs(Type[] types, string[] text, out string error)
+    {
+        int expected = 0;
+        VarConverter[] converters = new VarConverter[types.Length];
+        for (int i = 0; i < types.Length; i++)
+        {
+            var c = GameVar.GetConverter(types[i]);
+            if(c == null)
+            {
+                error = $"Could not find parser for type '{types[i].FullName}'.";
+                return null;
+            }
+
+            converters[i] = c;
+            expected += c.ExpectedArgCount;
+        }
+
+        if(expected != text.Length)
+        {
+            error = $"Incorrect number of input parts.\nExpected: {expected} parts from {types.Length} parameters, got {text.Length} parts.";
+            return null;
+        }
+
+        object[] output = new object[types.Length];
+        int readIndex = 0;
+        for (int i = 0; i < types.Length; i++)
+        {
+            var c = converters[i];
+            string[] args = new string[c.ExpectedArgCount];
+            System.Array.Copy(text, readIndex, args, 0, c.ExpectedArgCount);
+            readIndex += c.ExpectedArgCount;
+
+            object obj = c.Convert(args, out string oops);
+            if(oops != null)
+            {
+                error = $"Failed to parse argument #{i} ({types[i].Name}):\n{oops}";;
+                return null;
+            }
+
+            output[i] = obj;
+        }
+
+        error = null;
+        return output;
     }
 
     private void LogHistory(string cmd)

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using JNetworking;
+using UnityEngine;
 
 public static class Utils
 {
@@ -75,5 +76,27 @@ public static class Utils
 
         self.x = Mathf.Min(container.x + container.width, self.x + self.width) - self.width;
         self.y = Mathf.Min(container.y + container.height, self.y + self.height) - self.height;
+    }
+
+    [Command("Gets an overview of the network state.")]
+    public static string NetState()
+    {
+        return $"IsServer: {JNet.IsServer}\nIsClient: {JNet.IsClient}";
+    }
+
+    [GameVar]
+    public static string ClientRTT
+    {
+        get
+        {
+            if (!JNet.IsClient || JNet.ClientConnectonStatus != Lidgren.Network.NetConnectionStatus.Connected)
+            {
+                return $"Client not active or connected! ({JNet.ClientConnectonStatus})";
+            }
+
+            float rtt = JNet.GetClient().ServerConnection.AverageRoundtripTime;
+
+            return $"RTT: {rtt * 1000f:F1}ms";
+        }        
     }
 }

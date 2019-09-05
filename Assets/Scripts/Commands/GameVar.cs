@@ -9,32 +9,29 @@ public class GameVar
 {
     public string Name { get; }
     public GameVarAttribute Attribute { get; }
+    public FInfo FInfo { get; }
     public VarConverter Converter;
-    public FInfo FInfo;
-
-    private static Dictionary<Type, Type> converters;
+    public bool IsValid { get; }
+    private static Dictionary<Type, VarConverter> converters;
 
     static GameVar()
     {
         // BOOKMARK where converters are loaded.
-        converters = new Dictionary<Type, Type>
+        converters = new Dictionary<Type, VarConverter>
         {
-            { typeof(string), typeof(StringConverter) },
-            { typeof(float), typeof(FloatConverter) },
-            { typeof(bool), typeof(BoolConverter) }
+            { typeof(string), new StringConverter() },
+            { typeof(float), new FloatConverter() },
+            { typeof(bool), new BoolConverter() },
+            { typeof(int), new IntConverter() },
+            { typeof(Vector2), new Vector2Converter() },
         };
     }
-    static VarConverter MakeConverter(Type type)
+    public static VarConverter GetConverter(Type type)
     {
         if (converters.ContainsKey(type))
-        {
-            var converterType = converters[type];
-            return (VarConverter)converterType.GetConstructor(new Type[0] { })?.Invoke(new object[0] { });
-        }
+            return converters[type];
         else
-        {
             return null;
-        }
     }
 
     public GameVar(GameVarAttribute atr, FieldInfo field, PropertyInfo prop)
@@ -52,16 +49,22 @@ public class GameVar
         }
         
         Attribute = atr;
-        if (prop == null)
-            FInfo = new FInfo(field);
-        else
-            FInfo = new FInfo(prop);
 
-        Converter = MakeConverter(FInfo.MemberType);
+        if (prop != null)
+            FInfo = new FInfo(prop);
+        else
+            FInfo = new FInfo(field);
+
+        Converter = GetConverter(FInfo.MemberType);
 
         if(Converter == null)
         {
             Debug.LogError($"Failed to find converter for GameVar of type: {FInfo.MemberType}. Bad stuff is about to happen.");
+            IsValid = false;
+        }
+        else
+        {
+            IsValid = true;
         }
     }
 }
