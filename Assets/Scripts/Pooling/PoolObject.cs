@@ -107,9 +107,12 @@ public class PoolObject : MonoBehaviour
 
     public static T Spawn<T>(T c) where T : Component
     {
+        if (c == null)
+            return null;
+
         var po = Spawn(c.gameObject);
         if (po == null)
-            return default(T);
+            return null;
 
         return po.GetComponent<T>();
     }

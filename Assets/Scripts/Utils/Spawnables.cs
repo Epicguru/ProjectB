@@ -37,6 +37,18 @@ public class Spawnables : MonoBehaviour
         }
     }
 
+    public static AutoDestroy GetAutoDestroy(ushort netSpawnID)
+    {
+        if (Instance.autoDestroyMap.ContainsKey(netSpawnID))
+        {
+            return Instance.autoDestroyMap[netSpawnID];
+        }
+        else
+        {
+            return null;
+        }
+    }
+
     public static void NetRegisterAll()
     {
         Instance.NetRegister();
@@ -44,10 +56,13 @@ public class Spawnables : MonoBehaviour
 
     public Object[] Objects;
     public Dictionary<string, Object> map;
+    public Dictionary<ushort, AutoDestroy> autoDestroyMap;
 
     private void Awake()
     {
         map = new Dictionary<string, Object>();
+        autoDestroyMap = new Dictionary<ushort, AutoDestroy>();
+        ushort nID = 0;
         foreach (var item in Objects)
         {
             if(item != null)
@@ -55,6 +70,19 @@ public class Spawnables : MonoBehaviour
                 string name = item.name.Trim().ToLowerInvariant();
                 map.Add(name, item);
                 Debug.Log($"Registered '{name}' as {item.GetType().Name}.");
+
+                if(item is GameObject)
+                {
+                    var go = item as GameObject;
+                    var autoDestroy = go.GetComponent<AutoDestroy>();
+                    if(autoDestroy != null)
+                    {
+                        autoDestroy.NetSpawnID = nID;
+                        nID++;
+                        autoDestroyMap.Add(autoDestroy.NetSpawnID, autoDestroy);
+                        Debug.Log($"It is autodestroy mapped to ID {autoDestroy.NetSpawnID}");
+                    }
+                }
             }
         }
         Instance = this;

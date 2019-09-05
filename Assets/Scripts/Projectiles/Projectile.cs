@@ -508,6 +508,10 @@ public class Projectile : MonoBehaviour
 
     private void DealDamage(RaycastHit2D hit, ICollisionSurface surface, bool penetrated, bool reflected, Vector2 dir)
     {
+        // Of course no damage is dealt on the client.
+        if (!JNet.IsServer)
+            return;
+
         // Currently reflections deal no damage...
         if (reflected)
             return;

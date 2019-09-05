@@ -31,6 +31,9 @@ public class NetManager : NetBehaviour
                 case CustomMsg.PROJECTILE_SPAWN:
                     Projectile.ProcessMessage(msg);
                     break;
+                case CustomMsg.AUTO_DESTROY_SPAWN:
+                    AutoDestroy.ProcessMessage(msg);
+                    break;
 
                 default:
                     Debug.LogError($"Unhandled custom data id: {id}");

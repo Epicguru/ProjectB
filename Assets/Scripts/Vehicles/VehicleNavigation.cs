@@ -30,8 +30,9 @@ public class VehicleNavigation : MonoBehaviour
     public float TorqueForce = 100f;
     public float TorqueAngleMax = 90f;
 
-    private bool reachedEnd;
+    private bool reachedEnd = true;
     private Vector2 finalTarget;
+    private float finalAngle;
 
     private void Update()
     {
@@ -44,19 +45,27 @@ public class VehicleNavigation : MonoBehaviour
             if(result != PathfindingResult.SUCCESSFUL)
             {
                 Debug.LogWarning($"Pathfinding result: {result}");
+                reachedEnd = true;
             }
-            reachedEnd = false;
+            else
+            {
+                reachedEnd = false;
+            }
         }
 
         if(Targets == null || (Targets.Count == 0 && reachedEnd))
         {
+            float deltaAngle = Mathf.DeltaAngle(transform.localEulerAngles.z, finalAngle);
+            float scale = Mathf.Abs(deltaAngle) / TorqueAngleMax;
+            float torque = TorqueForce * scale * (deltaAngle > 0f ? 1f : -1f) * 1f;
+
             Movement.ForwardsThrust = 0f;
-            Movement.Torque = 0f;
+            Movement.Torque = torque;
         }
         else
         {
             Vector2 point = Targets.Count != 0 ? Navigation.GetWorldPos(Targets[0]) : finalTarget;
-            if (point.DistanceCheck(transform.position, PointReachedDistance))
+            if (point.DistanceCheck(transform.position, Targets.Count != 0 ? PointReachedDistance : 0.2f))
             {
                 if (Targets.Count > 1)
                 {
@@ -84,7 +93,7 @@ public class VehicleNavigation : MonoBehaviour
             float scale = Mathf.Abs(deltaAngle) / TorqueAngleMax;
 
             float torque = TorqueForce * scale * (deltaAngle > 0f ? 1f : -1f);
-            float thrust = ThrustForce * Mathf.Clamp01(dst / ThrustDecreaseDistance);
+            float thrust = ThrustForce * Mathf.Clamp01(dst / (Targets.Count != 0 ? ThrustDecreaseDistance : 7f));
 
             Movement.ForwardsThrust = thrust;
             Movement.Torque = torque;

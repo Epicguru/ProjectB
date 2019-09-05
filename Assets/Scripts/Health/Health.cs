@@ -9,6 +9,8 @@ public class Health : NetBehaviour
     private Dictionary<Collider2D, HealthPart> c2h;
     private Dictionary<HealthPartID, HealthPart[]> id2h;
 
+    public bool ExplodeUponDeath = true;
+
     private void Awake()
     {
         parts = GetComponentsInChildren<HealthPart>();
@@ -105,6 +107,12 @@ public class Health : NetBehaviour
 
     public void ChangeHealth(Collider2D collider, float change)
     {
+        if (!JNet.IsServer)
+        {
+            Debug.LogError("Cannot change health when not on server.");
+            return;
+        }
+
         if (change == 0f)
             return;
 
@@ -127,6 +135,12 @@ public class Health : NetBehaviour
             if(part.Health == 0f)
             {
                 Debug.Log($"Damn we dead. Died because {part.Name} was destroyed.");
+
+                var spawned = PoolObject.Spawn(Spawnables.Get<PoolObject>("Explosion Particles"));
+                spawned.transform.position = this.transform.position;
+                spawned.GetComponent<AutoDestroy>().NetSpawn();
+
+                Destroy(this.gameObject);
             }
         }
     }
@@ -136,5 +150,6 @@ public enum HealthPartID
 {
     HULL,
     ENGINE,
+    BRIDGE,
     OTHER
 }
