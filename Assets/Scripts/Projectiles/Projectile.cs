@@ -33,6 +33,9 @@ public class Projectile : MonoBehaviour
     [Tooltip("The base damage that the projectile deals to Health components.")]
     public float Damage = 10f;
 
+    [Header("Optimization")]
+    public float TimeToDespawn = 5f;
+
     [Header("Penetration")]
     [Min(0f)]
     [Tooltip("The penetration potential of this projectile. It is compared to the surfaces 'toughness' value.")]
@@ -90,11 +93,19 @@ public class Projectile : MonoBehaviour
 
         if (Tracer != null)
             Tracer.positionCount = 0;
+
+        Invoke("Kill", TimeToDespawn);
     }
 
     private void UponDespawn()
     {
         random = null;
+        CancelInvoke("Kill");
+    }
+
+    private void Kill()
+    {
+        PoolObject.Despawn(this.PoolObject);
     }
 
     private void LateUpdate()
@@ -583,7 +594,7 @@ public class Projectile : MonoBehaviour
 
     private static Projectile SpawnLocal(Vector2 position, Vector2 direction, float speed, int seed)
     {
-        var spawned = PoolObject.Spawn(Spawnables.Get<Projectile>("Standard Projectile"));
+        var spawned = PoolObject.Spawn(Spawnables.Get<Projectile>("Projectile"));
 
         spawned.transform.position = position;
         spawned.Direction = direction;

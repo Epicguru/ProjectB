@@ -7,13 +7,6 @@ namespace JNetworking
 {
     public partial class NetPosSync : NetBehaviour
     {
-        [Header("Basic")]
-        /// <summary>
-        /// The mode (direction) of network syncronisation.
-        /// This property is not networked, so it should be set per network node.
-        /// </summary>
-        public PosSyncMode SyncMode = PosSyncMode.SERVER_TO_CLIENT;
-
         [Header("Sync Options")]
         [Range(0f, 60f)]
         public float SendRate = 10f;
@@ -87,10 +80,6 @@ namespace JNetworking
 
         private void ServerUpdate()
         {
-            // If not sending from server to clients, stop. This should normally always be false.
-            if (SyncMode != PosSyncMode.SERVER_TO_CLIENT)
-                return;
-
             float interval = SendRate == 0f ? 0f : 1f / SendRate;
             sendTimer += Time.unscaledDeltaTime;
             if(sendTimer >= interval)
@@ -108,85 +97,35 @@ namespace JNetworking
         {
             // Don't do anything if already on the server.
             if (IsServer)
-            {
-                if(SyncMode != PosSyncMode.SERVER_TO_CLIENT)
-                {
-                    Debug.LogWarning($"Since this NetPosSync {name} is on the server, the sync mode should be set to SERVER_TO_CLIENT.");
-                }
                 return;
-            }
 
-            if(SyncMode == PosSyncMode.SERVER_TO_CLIENT)
+            // Interpolate to the position that the server sends...
+            float interval = SendRate == 0f ? 0f : 1f / SendRate;
+            bool noLerp = interval == 0f;
+            sinceRecievedTimer += Time.unscaledDeltaTime;
+            float elapsed = sinceRecievedTimer;
+
+            if (!noLerp)
             {
-                // Interpolate to the position that the server sends...
-                float interval = SendRate == 0f ? 0f : 1f / SendRate;
-                bool noLerp = interval == 0f;
-                sinceRecievedTimer += Time.unscaledDeltaTime;
-                float elapsed = sinceRecievedTimer;
+                // Lerp!
+                float p = elapsed / interval;
+                float x = Curve.Evaluate(p);
 
-                if (!noLerp)
+                Vector2 lerpedPos = Vector2.LerpUnclamped(oldPos, newPos, x);
+                CurrentPos = lerpedPos;
+
+                if (SyncRotation)
                 {
-                    // Lerp!
-                    float p = elapsed / interval;
-                    float x = Curve.Evaluate(p);
-
-                    Vector2 lerpedPos = Vector2.LerpUnclamped(oldPos, newPos, x);
-                    CurrentPos = lerpedPos;
-
-                    if (SyncRotation)
-                    {
-                        float lerpedAngle = Mathf.LerpAngle(oldRot, newRot, x);
-                        CurrentAngle = lerpedAngle;
-                    }
+                    float lerpedAngle = Mathf.LerpAngle(oldRot, newRot, x);
+                    CurrentAngle = lerpedAngle;
                 }
-                else
-                {
-                    CurrentPos = newPos;
-                    if (SyncRotation)
-                        CurrentAngle = newRot;
-                }
-
             }
-            else if(SyncMode == PosSyncMode.CLIENT_TO_SERVER)
+            else
             {
-                // Send our own position to the server using CMD's.
-                if (!HasAuthority)
-                {
-                    Debug.LogError("This NetPosSync object does not have local client authority, cannot send local data. Spawn with local authority" +
-                        "or assign local authority once spawned!");
-                }
-                else
-                {
-                    float interval = SendRate == 0f ? 0f : 1f / SendRate;
-                    sendTimer += Time.unscaledDeltaTime;
-                    if(sendTimer >= interval)
-                    {
-                        sendTimer = 0f;
-                        bool dirty = false;
-                        if (CurrentPos != lastSentPos)
-                            dirty = true;
-                        if (SyncRotation && CurrentAngle != lastSentAngle)
-                            dirty = true;
-
-                        if (dirty)
-                        {
-                            // TODO send CMDS.
-                            InvokeCMD("CmdSendClientData", CurrentPos, CurrentAngle);
-                        }
-                    }
-                }
-            }
-        }
-
-        [Cmd]
-        private void CmdSendClientData(Vector2 pos, float angle)
-        {
-            // Just instantly update our position and rotation.
-            // TODO apply a !visual only! and optional interpolation on the server, to make it less jarring.
-
-            CurrentPos = pos;
-            if (SyncRotation)
-                CurrentAngle = angle;
+                CurrentPos = newPos;
+                if (SyncRotation)
+                    CurrentAngle = newRot;
+            }            
         }
 
         public override void Serialize(NetOutgoingMessage msg, bool isForFirst)
@@ -214,12 +153,6 @@ namespace JNetworking
 
             sinceRecievedTimer = 0f;
         }
-    }
-
-    public enum PosSyncMode : byte
-    {
-        SERVER_TO_CLIENT,
-        CLIENT_TO_SERVER
     }
 }
 

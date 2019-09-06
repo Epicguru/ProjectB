@@ -3,6 +3,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(VehicleMovement))]
 [RequireComponent(typeof(VehicleNavigation))]
+[RequireComponent(typeof(VehicleMountedWeapons))]
 [RequireComponent(typeof(Health))]
 [RequireComponent(typeof(NetPosSync))]
 public class Vehicle : MonoBehaviour
@@ -37,6 +38,31 @@ public class Vehicle : MonoBehaviour
         }
     }
     private VehicleNavigation _nav;
+    public VehicleMountedWeapons MountedWeapons
+    {
+        get
+        {
+            if (_weapons == null)
+                _weapons = GetComponent<VehicleMountedWeapons>();
+            return _weapons;
+        }
+    }
+    private VehicleMountedWeapons _weapons;
+    public NetPosSync NetPosSync
+    {
+        get
+        {
+            if (_posSync == null)
+                _posSync = GetComponent<NetPosSync>();
+            return _posSync;
+        }
+    }
+    private NetPosSync _posSync;
 
     public string Name = "My Vehicle";
+
+    private void Awake()
+    {
+        NetPosSync.SyncRotation = true;
+    }
 }

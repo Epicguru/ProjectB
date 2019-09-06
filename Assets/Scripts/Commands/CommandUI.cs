@@ -46,12 +46,13 @@ public class CommandUI : MonoBehaviour
     private Vector2 scroll;
     private Vector2 scroll2;
     private bool open = false;
+    private bool firstFrame = false;
 
     private void Awake()
     {
         LoadCommands();
 
-        Input = new IMGUIWindow(0, new Rect(100, 100, Width, Height), "Console", () =>
+        Input = new IMGUIWindow(int.MaxValue, new Rect(100, 100, Width, Height), "Console", () =>
         {
             var e = Event.current;
             if (e.type == EventType.KeyDown && e.keyCode == KeyCode.Return && !string.IsNullOrWhiteSpace(CurrentCommand))
@@ -89,8 +90,18 @@ public class CommandUI : MonoBehaviour
             GUILayout.BeginHorizontal();
             if (tabbed)
                 CurrentCommand = items[0];
+
+            GUI.SetNextControlName("CMDInput");
             CurrentCommand = GUILayout.TextField(CurrentCommand, GUILayout.MaxWidth(Width - 50));
-            if(tabbed)
+
+            if (firstFrame)
+            {
+                GUI.FocusWindow(int.MaxValue);
+                GUI.FocusControl("CMDInput");
+                firstFrame = false;
+            }
+
+            if (tabbed)
             {
                 var txtF = (TextEditor)GUIUtility.GetStateObject(typeof(TextEditor), GUIUtility.keyboardControl);
                 txtF.cursorIndex = CurrentCommand.Length;
@@ -142,7 +153,12 @@ public class CommandUI : MonoBehaviour
     private void Update()
     {
         if (UnityEngine.Input.GetKeyDown(KeyCode.KeypadMinus))
+        {
             open = !open;
+
+            if(open)
+                firstFrame = true;
+        }
     }
 
     public static void LoadCommands()
@@ -529,6 +545,12 @@ public class CommandUI : MonoBehaviour
     {
         if(open)
             Input.OnGUI();
+    }
+
+    [Command]
+    public static string Help()
+    {
+        return "Useful commands: cmds, vars";
     }
 
     [Command("Clears the command console.")]

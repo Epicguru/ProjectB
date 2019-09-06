@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using JNetworking;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -50,6 +51,10 @@ public sealed class EditorTools : MonoBehaviour
 
     private void OnGUI()
     {
+        bool netWorking = JNet.IsClient || JNet.IsServer;
+        if (!netWorking)
+            return;
+
         PhysicsPaused = GUILayout.Toggle(PhysicsPaused, "Physics Pause");
 
         GUILayout.Label($"Selected Rigidbody: {(SelectedRigidbody == null ? "null" : SelectedRigidbody.gameObject.name)}");

@@ -1,9 +1,13 @@
 ﻿using JNetworking;
+using System;
+using System.IO;
 using UnityEngine;
 
 [DefaultExecutionOrder(-500)]
 public class NetManager : NetBehaviour
 {
+    private bool record = false;
+
     private void Start()
     {
         JNet.Init("Project B");
@@ -41,6 +45,11 @@ public class NetManager : NetBehaviour
             }
         };
 
+        if (record)
+        {
+            StartRecording();
+        }
+
         if (JNet.IsServer)
             JNet.ConnectClientToHost(null);
         else
@@ -64,6 +73,7 @@ public class NetManager : NetBehaviour
             return;
         }
 
+        record = GUILayout.Toggle(record, "Record client");
         if (GUILayout.Button("Start Client"))
         {
             StartClient();
@@ -79,5 +89,42 @@ public class NetManager : NetBehaviour
             StartServer();
             StartClient();
         }
+    }
+
+    [Command]
+    private static string StartPlayback()
+    {
+        string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "PBRecording.txt");
+
+        if (File.Exists(path))
+        {
+            JNet.Playback.StartPlayback(path);
+            return "Started playback!";
+        }
+        else
+        {
+            return "Recording file not found!";
+        }
+    }
+
+    [Command]
+    private static string StopPlayback()
+    {
+        JNet.Playback.StopPlayback();
+        return "Stopped playback.";
+    }
+
+    [Command]
+    private static string StartRecording()
+    {
+        JNet.Playback.StartRecording(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "PBRecording.txt"), true);
+        return "Started recording.";
+    }
+
+    [Command]
+    private static string StopRecording()
+    {
+        JNet.Playback.StopRecording();
+        return "Stopped recording.";
     }
 }

@@ -17,8 +17,6 @@ public class AutoCannon : MonoBehaviour
     private MountedWeapon _weapon;
 
     public NetAnimator Anim;
-    public Transform TopFire, BottomFire;
-    public float ProjectileSpeed = 300f;
 
     private void Update()
     {
@@ -26,24 +24,5 @@ public class AutoCannon : MonoBehaviour
         {
             Anim.SetBool("Shoot", MountedWeapon.Fire);
         }
-    }
-
-    private void UponAnimationEvent(AnimationEvent e)
-    {
-        string s = e.stringParameter.Trim().ToLowerInvariant();
-
-        switch (s)
-        {
-            case "shoot":
-
-                if (JNet.IsServer)
-                {
-                    Debug.Log(e.intParameter);
-                    Transform pos = e.intParameter == 0 ? BottomFire : TopFire;
-                    Projectile.Spawn(pos.position, pos.right, ProjectileSpeed);
-                }
-
-                break;
-        }
-    }
+    }    
 }

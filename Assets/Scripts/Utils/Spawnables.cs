@@ -1,6 +1,7 @@
 ﻿
 using JNetworking;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 public class Spawnables : MonoBehaviour
@@ -11,9 +12,9 @@ public class Spawnables : MonoBehaviour
     {
         name = name.Trim().ToLowerInvariant();
 
-        if (Instance.map.ContainsKey(name))
+        if (map.ContainsKey(name))
         {
-            Object obj = Instance.map[name];
+            Object obj = map[name];
             if(!(obj is T))
             {
                 if(obj is GameObject && typeof(Component).IsAssignableFrom(typeof(T)))
@@ -39,9 +40,9 @@ public class Spawnables : MonoBehaviour
 
     public static AutoDestroy GetAutoDestroy(ushort netSpawnID)
     {
-        if (Instance.autoDestroyMap.ContainsKey(netSpawnID))
+        if (autoDestroyMap.ContainsKey(netSpawnID))
         {
-            return Instance.autoDestroyMap[netSpawnID];
+            return autoDestroyMap[netSpawnID];
         }
         else
         {
@@ -95,12 +96,24 @@ public class Spawnables : MonoBehaviour
     }
 
     public Object[] Objects;
-    public Dictionary<string, Object> map;
-    public Dictionary<ushort, AutoDestroy> autoDestroyMap;
+    public static SortedDictionary<string, Object> map;
+    public static Dictionary<ushort, AutoDestroy> autoDestroyMap;
+
+    [Command("Lists all spawnables.", Name = "Spawnables")]
+    private static string ListSpawnables()
+    {
+        StringBuilder str = new StringBuilder();
+        foreach (var value in map.Values)
+        {
+            str.Append(value.name).Append(": ").AppendLine(value.GetType().Name);
+        }
+
+        return str.ToString();
+    }
 
     private void Awake()
     {
-        map = new Dictionary<string, Object>();
+        map = new SortedDictionary<string, Object>();
         autoDestroyMap = new Dictionary<ushort, AutoDestroy>();
         ushort nID = 0;
         foreach (var item in Objects)

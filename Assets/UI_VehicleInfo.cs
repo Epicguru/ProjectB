@@ -47,6 +47,7 @@ public class UI_VehicleInfo : MonoBehaviour
 
         if (healthDetails.activeSelf)
         {
+            healthDetails.SetActive(false);
             var realParts = v.Health.GetAllHealthParts();
             for (int i = 0; i < MAX_PARTS; i++)
             {
@@ -62,6 +63,7 @@ public class UI_VehicleInfo : MonoBehaviour
                     part.gameObject.SetActive(false);
                 }
             }
+            healthDetails.SetActive(true);
         }
     }
 

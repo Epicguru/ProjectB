@@ -76,7 +76,6 @@ namespace JNetworking
         internal static WorldStateTracker Tracker;
         internal static int CurrentBytesIn;
         internal static int CurrentMessagesIn;
-        private static Queue<Action> PostedActions;
         private static JNetClient Client;
         private static JNetServer Server;
         private static float ByteTimer;
@@ -107,7 +106,6 @@ namespace JNetworking
             Tracker = new WorldStateTracker();
             Prefabs = new NetObject[ushort.MaxValue + 1];
             Playback = new JNetPlayback();
-            PostedActions = new Queue<Action>();
 
             NetBehaviour.UpdateClassMap();
 
@@ -134,8 +132,6 @@ namespace JNetworking
             Prefabs = null;
             Playback.Dispose();
             Playback = null;
-            PostedActions.Clear();
-            PostedActions = null;
 
             Initialized = false;
         }
@@ -148,6 +144,10 @@ namespace JNetworking
             return Prefabs[id];
         }
 
+        /// <summary>
+        /// Registers a prefab to the network system, allowing it to be replicated accross clients.
+        /// </summary>
+        /// <param name="prefab"></param>
         public static void RegisterPrefab(NetObject prefab)
         {
             if(prefab == null)
@@ -183,6 +183,9 @@ namespace JNetworking
             Prefabs[id] = prefab;
         }
 
+        /// <summary>
+        /// Removes all currently registered net prefabs.
+        /// </summary>
         public static void ClearPrefabs()
         {
             for (int i = 0; i < Prefabs.Length; i++)
@@ -197,6 +200,10 @@ namespace JNetworking
             MaxPrefabID = 1;
         }
 
+        /// <summary>
+        /// Utility that will check if the server is active. If it is not active, an exception is thrown with the given message.
+        /// </summary>
+        /// <param name="errorMessage"></param>
         public static void CheckServer(string errorMessage)
         {
             if (!JNet.IsServer)
@@ -255,24 +262,6 @@ namespace JNetworking
                 CurrentBytesIn = 0;
                 CurrentMessagesIn = 0;
                 ByteTimer -= 1f;
-            }
-
-            RunPostActions();
-        }
-
-        public static void PostAction(Action a)
-        {
-            if (a == null)
-                return;
-
-            PostedActions.Enqueue(a);
-        }
-
-        private static void RunPostActions()
-        {
-            while(PostedActions.Count > 0)
-            {
-                PostedActions.Dequeue()?.Invoke();
             }
         }
 
@@ -384,6 +373,13 @@ namespace JNetworking
             }
         }
 
+        /// <summary>
+        /// Combines two network messages into one. Requires an active client or server to perform the merge.
+        /// </summary>
+        /// <param name="a">The message to be placed first.</param>
+        /// <param name="b">The message that goes after the first.</param>
+        /// <param name="fromServer">If true, then the server is used to merge. If false, the client is used.</param>
+        /// <returns>The message that contains the two messages.</returns>
         public static NetOutgoingMessage CreateCombinedMessage(NetOutgoingMessage a, NetOutgoingMessage b, bool fromServer)
         {
             if (a == null || b == null)
@@ -521,6 +517,17 @@ namespace JNetworking
         {
             if (!condition)
                 throw new JNetException(uponFailure);
+        }
+
+        /// <summary>
+        /// Gets an enumerator for all currently active NetObjects. Fairly slow, so don't call this often.
+        /// </summary>
+        public static IEnumerable<NetObject> GetCurrentNetObjects()
+        {
+            if (Tracker == null)
+                return null;
+
+            return Tracker.ActiveObjects;
         }
 
         /// <summary>

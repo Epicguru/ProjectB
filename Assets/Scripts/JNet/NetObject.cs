@@ -18,7 +18,13 @@ namespace JNetworking
 
         public long OwnerID { get; internal set; }
         public bool HasNetID { get { return NetID != 0; } }
+        /// <summary>
+        /// Returns true if the prefab ID is valid.
+        /// </summary>
         public bool HasPrefabID { get { return PrefabID != 0; } }
+        /// <summary>
+        /// Returns true if this is a prefab that has been registered using <see cref="JNet.RegisterPrefab(NetObject)"/>.
+        /// </summary>
         public bool IsRegisteredPrefab
         {
             get

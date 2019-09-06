@@ -125,7 +125,7 @@ namespace JNetworking
         }
 
         public bool IsServer { get { return JNet.IsServer; } }
-        public bool IsClient { get { return JNet.IsClient && JNet.ClientConnectonStatus == NetConnectionStatus.Connected; } }
+        public bool IsClient { get { return JNet.IsClient && (JNet.ClientConnectonStatus == NetConnectionStatus.Connected || JNet.Playback.IsInPlayback); } }
         public int LastSerializedFrame { get; private set; } = -1;
         public int LastDeserializedFrame { get; private set; } = -1;
 

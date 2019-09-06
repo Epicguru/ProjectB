@@ -1,4 +1,5 @@
 ﻿using JNetworking;
+using System.Text;
 using UnityEngine;
 
 public static class Utils
@@ -78,10 +79,26 @@ public static class Utils
         self.y = Mathf.Min(container.y + container.height, self.y + self.height) - self.height;
     }
 
+    #region Commands & GameVars
+
     [Command("Gets an overview of the network state.")]
     public static string NetState()
     {
         return $"IsServer: {JNet.IsServer}\nIsClient: {JNet.IsClient}";
+    }
+
+    [Command("Gets a list of current network objects.")]
+    public static string NetObjects()
+    {
+        StringBuilder str = new StringBuilder();
+        str.Append("There are ").Append(JNet.TrackedObjectCount).AppendLine(" tracked objects:");
+
+        foreach (var obj in JNet.GetCurrentNetObjects())
+        {
+            str.Append(obj.NetID).Append(" : ").Append(obj.name.Trim()).Append(" (Owner: ").Append(obj.OwnerID == 0 ? "Server" : obj.OwnerID.ToString()).Append(", PrefabID: ").Append(obj.PrefabID).AppendLine(")");
+        }
+
+        return str.ToString();
     }
 
     [GameVar]
@@ -99,4 +116,6 @@ public static class Utils
             return $"RTT: {rtt * 1000f:F1}ms";
         }        
     }
+
+    #endregion
 }

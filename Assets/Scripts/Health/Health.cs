@@ -141,7 +141,7 @@ public class Health : NetBehaviour
             {
                 Debug.Log($"Damn we dead. Died because {part.Name} was destroyed.");
 
-                var spawned = PoolObject.Spawn(Spawnables.Get<PoolObject>("Explosion Particles"));
+                var spawned = PoolObject.Spawn(Spawnables.Get<PoolObject>("ExplosionParticles"));
                 spawned.transform.position = this.transform.position;
                 spawned.GetComponent<AutoDestroy>().NetSpawn();
 

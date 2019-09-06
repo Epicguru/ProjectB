@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 5031809783676560272}
   - component: {fileID: 5031809783676560273}
   m_Layer: 0
-  m_Name: Standard Projectile
+  m_Name: Projectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -101,9 +101,9 @@ MonoBehaviour:
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 0.5
   m_Color: {r: 1, g: 0.903165, b: 0.28773582, a: 1}
-  m_Intensity: 2
+  m_Intensity: 1.05
   m_LightVolumeOpacity: 0
-  m_ApplyToSortingLayers: 0000000083d59b75890d85ed
+  m_ApplyToSortingLayers: 0000000083d59b75090818ac890d85ed6f564abe21fe11c2a16212226b94c3120b0d04bb
   m_LightCookieSprite: {fileID: 0}
   m_UseNormalMap: 1
   m_LightOrder: 0
@@ -114,10 +114,10 @@ MonoBehaviour:
   m_PointLightOuterRadius: 1
   m_PointLightDistance: 2
   m_PointLightQuality: 1
-  m_ShapeLightParametricSides: 24
+  m_ShapeLightParametricSides: 18
   m_ShapeLightParametricAngleOffset: 0
   m_ShapeLightParametricRadius: 5
-  m_ShapeLightFalloffSize: 4.9
+  m_ShapeLightFalloffSize: 40.1
   m_ShapeLightFalloffOffset: {x: 0, y: 0}
   m_ShapePath:
   - {x: -0.5, y: -0.5, z: 0}
@@ -242,7 +242,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a12a90a90c0910141bbcbc5794b30f81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _id: 15768
+  _id: 16294
   UponSpawn:
     m_PersistentCalls:
       m_Calls: []
@@ -271,6 +271,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   Damage: 10
+  TimeToDespawn: 5
   PenetrationPower: 5
   PenetrationPenalty: 0.2
   PenetrationSkew: {x: 10, y: 40}
@@ -281,6 +282,6 @@ MonoBehaviour:
   Tracer: {fileID: 5031809783676560275}
   TracerLength: 15
   Seed: 0
-  PathTraceEnabled: 1
+  PathTraceEnabled: 0
   PathTraceIdleInterval: 5
   RemainAfterDeath: 0

@@ -49,5 +49,5 @@ Material:
     - _WaveScale: 0.5
     m_Colors:
     - _FloorColor: {r: 0.2028302, g: 1, b: 0.92771864, a: 1}
-    - _FloorTiling: {r: 30, g: 30, b: 0, a: 0}
+    - _FloorTiling: {r: 100, g: 100, b: 0, a: 0}
     - _WaterColor: {r: 0, g: 0.19424456, b: 0.3962264, a: 1}

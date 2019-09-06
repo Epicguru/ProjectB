@@ -1,11 +1,9 @@
 fileFormatVersion: 2
-guid: bae53a4c0e8f01d4196b696a475235c0
+guid: 2581cabef4aa8d145908c877398a180f
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences:
-  - MuzzleFlashPrefab: {fileID: 917617540678324126, guid: dc6342cf8b7c3484690f7eac81aa45fc,
-      type: 3}
+  defaultReferences: []
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
