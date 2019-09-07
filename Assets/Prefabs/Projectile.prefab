@@ -242,7 +242,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a12a90a90c0910141bbcbc5794b30f81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _id: 16294
+  _id: 16332
   UponSpawn:
     m_PersistentCalls:
       m_Calls: []
@@ -272,7 +272,7 @@ MonoBehaviour:
     m_Bits: 1
   Damage: 10
   TimeToDespawn: 5
-  PenetrationPower: 5
+  PenetrationPower: 1
   PenetrationPenalty: 0.2
   PenetrationSkew: {x: 10, y: 40}
   BaseReflectionChance: 1
