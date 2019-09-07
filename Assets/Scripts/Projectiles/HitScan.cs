@@ -1,4 +1,5 @@
 ﻿
+using JNetworking;
 using UnityEngine;
 
 /// <summary>
@@ -27,11 +28,14 @@ public static class HitScan
                 if (!surface.IsEnabled())
                     continue;
 
-                var h = surface.GetHealth();
-                if(h != null)
+                if (JNet.IsServer)
                 {
-                    h.ChangeHealth(hit.collider, -damage);
-                }
+                    var h = surface.GetHealth();
+                    if (h != null)
+                    {
+                        h.ChangeHealth(hit.collider, -damage);
+                    }
+                }                
 
                 if (display)
                 {

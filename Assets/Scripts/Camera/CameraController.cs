@@ -27,11 +27,7 @@ public class CameraController : MonoBehaviour
     public float SizeLerp = 5f;
 
     private Vector2 mouseStart, camStart;
-
-    private void Awake()
-    {
-        InvokeRepeating("Tick", 0f, 1f / 60f);
-    }
+    private float timer;
 
     private void Update()
     {
@@ -57,6 +53,13 @@ public class CameraController : MonoBehaviour
         }
 
         transform.position = newPos;
+
+        timer += Time.unscaledDeltaTime;
+        if(timer >= 1f / 60f)
+        {
+            timer -= 1f / 60f;
+            Tick();
+        }
     }
 
     private void Tick()

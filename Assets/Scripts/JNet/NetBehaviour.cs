@@ -512,11 +512,22 @@ namespace JNetworking
             this.Deserialize(msg, first);
         }
 
+        /// <summary>
+        /// Called when this object needs to (or has requested to be) serialized to be sent to clients.
+        /// Only called when server is running.
+        /// </summary>
+        /// <param name="msg">The message to write data to.</param>
+        /// <param name="isForFirst">If true, then this serialization is for a new client that needs this object, or when this object first spawns.</param>
         public virtual void Serialize(NetOutgoingMessage msg, bool isForFirst)
         {
 
         }
 
+        /// <summary>
+        /// Called on clients (but not when hosting!) when the server has serialized data that needs to be processed or stored on this client.
+        /// </summary>
+        /// <param name="msg">The message to read data from.</param>
+        /// <param name="first">If true, then this serialized message is the first to ever be recieved by this client, such as when joining a server or when a new object spawns.</param>
         public virtual void Deserialize(NetIncomingMessage msg, bool first)
         {
 

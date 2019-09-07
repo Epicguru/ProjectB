@@ -151,6 +151,17 @@ namespace JNetworking
                 newRot = msg.ReadFloat();
             }
 
+            if (first)
+            {
+                oldPos = newPos;
+                CurrentPos = newPos;
+                if (SyncRotation)
+                {
+                    oldRot = newRot;
+                    CurrentAngle = newRot;
+                }
+            }
+
             sinceRecievedTimer = 0f;
         }
     }

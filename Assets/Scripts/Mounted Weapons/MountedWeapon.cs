@@ -22,10 +22,10 @@ public class MountedWeapon : NetBehaviour
     public float RPM = 120f;
 
     [Header("Turning")]
-    public bool TurnToTarget = false;
-    [SyncVar] public bool AutoFire = false;
+    public bool TurnToTarget = true;
     public float MaxTurnSpeed = 180f;
-    public float AutoFireMinAngle = 5f;
+    public float InSightsMinAngle = 5f;
+    public float IdleAngle = 0f;
 
     [Header("Spread")]
     public Vector2 AngleOffset = new Vector2(0f, 5f);
@@ -35,6 +35,8 @@ public class MountedWeapon : NetBehaviour
 
     [Header("Effects")]
     public MuzzleFlash MuzzleFlashPrefab;
+
+    public bool TargetInSights { get; private set; }
 
     private float timer;
 
@@ -47,39 +49,28 @@ public class MountedWeapon : NetBehaviour
 
     private void Update()
     {
-        bool targetInSights = false;
-        if (TurnToTarget)
+        float currentAngle = transform.eulerAngles.z;
+        float realTargetAngle = ((Vector2)transform.position).AngleTowards(TargetPos);
+        float targetAngle = TurnToTarget ? realTargetAngle : IdleAngle;
+        float delta = Mathf.DeltaAngle(currentAngle, targetAngle);
+
+        float turnScale = delta == 0f ? 0f : delta > 0f ? 1f : -1f;
+        float toTurn = MaxTurnSpeed * turnScale * Time.deltaTime;
+        float finalAngle;
+
+        if(Mathf.Abs(toTurn) > Mathf.Abs(delta))
         {
-            float currentAngle = transform.eulerAngles.z;
-            float targetAngle = ((Vector2)transform.position).AngleTowards(TargetPos);
-            float delta = Mathf.DeltaAngle(currentAngle, targetAngle);
-
-            float turnScale = delta == 0f ? 0f : delta > 0f ? 1f : -1f;
-            float toTurn = MaxTurnSpeed * turnScale * Time.deltaTime;
-            float finalAngle = currentAngle;
-
-            float final = currentAngle + toTurn;
-            if(turnScale == 1f && final > targetAngle)
-            {
-                finalAngle = targetAngle;
-            }
-            else if(turnScale == -1f && final < targetAngle)
-            {
-                finalAngle = targetAngle;
-            }
-            else
-            {
-                finalAngle = final;
-            }
-
-            transform.localEulerAngles = new Vector3(0f, 0f, finalAngle);
-
-            delta = Mathf.Abs(Mathf.DeltaAngle(finalAngle, targetAngle));
-            targetInSights = delta <= AutoFireMinAngle;
+            finalAngle = targetAngle;
+        }
+        else
+        {
+            finalAngle = currentAngle + toTurn;
         }
 
-        if (AutoFire && targetInSights)
-            Fire = true;
+        delta = Mathf.Abs(Mathf.DeltaAngle(finalAngle, realTargetAngle));
+        TargetInSights = delta <= InSightsMinAngle;
+
+        transform.localEulerAngles = new Vector3(0f, 0f, finalAngle);
 
         if (AnimationDriven)
             return;
@@ -122,24 +113,25 @@ public class MountedWeapon : NetBehaviour
             spawned.transform.rotation = pos.rotation;
         }
 
-        if (JNet.IsServer)
-        {
-            Vector2 direction = pos.right;
-            float angle = direction.ToAngle();
-            bool right = Random.value <= 0.5f;
-            angle += Random.Range(AngleOffset.x, AngleOffset.y) * 0.5f * (right ? 1f : -1f);
-            direction = angle.ToDirection();
+        Vector2 direction = pos.right;
+        float angle = direction.ToAngle();
+        bool right = Random.value <= 0.5f;
+        angle += Random.Range(AngleOffset.x, AngleOffset.y) * 0.5f * (right ? 1f : -1f);
+        direction = angle.ToDirection();
 
-            switch (Type)
-            {
-                case ProjectileType.HITSCAN:
-                    HitScan.Shoot(pos.position, direction, HitscanRange, 10f); // TODO allow custom damage here and in spawned projectiles.
-                    break;
-                case ProjectileType.PROJECTILE:
+        switch (Type)
+        {
+            case ProjectileType.HITSCAN:
+                HitScan.Shoot(pos.position, direction, HitscanRange, 10f); // TODO allow custom damage here and in spawned projectiles.
+                break;
+            case ProjectileType.PROJECTILE:
+                if (JNet.IsServer)
+                {
                     Projectile.Spawn(pos.position, direction, ProjectileSpeed);
-                    break;
-            }
+                }
+                break;
         }
+        
     }
 
     private void OnDrawGizmosSelected()
