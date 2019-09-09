@@ -56,7 +56,10 @@ public class Projectile : MonoBehaviour
     public float HeadOnCoefficient = 0.5f;
 
     [Header("Effects")]
+    [Tooltip("The default hit effect to use when the surface does not provide a custom one.")]
     public PoolObject HitEffectPrefab;
+    [Tooltip("The default reflection (deflection whatever) effect to use when the surface does not provide a custom one.")]
+    public PoolObject ReflectEffectPrefab;
     public LineRenderer Tracer;
     [Range(0f, 20f)]
     public float TracerLength = 5f;
@@ -505,7 +508,7 @@ public class Projectile : MonoBehaviour
     private void UponReflected(RaycastHit2D hit, ICollisionSurface surfaceData, float chance, Vector2 dir)
     {
         // Called whenever the projectile is deflected off a surface that it could not penetrate.
-        SpawnHitEffect(surfaceData.GetHitEffect() ?? HitEffectPrefab, hit.point, hit.normal);
+        SpawnHitEffect(ReflectEffectPrefab, hit.point, hit.normal);
 
         DealDamage(hit, surfaceData, false, true, dir);
     }

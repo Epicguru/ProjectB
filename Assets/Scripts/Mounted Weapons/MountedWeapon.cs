@@ -14,6 +14,9 @@ public class MountedWeapon : NetBehaviour
         PROJECTILE
     }
 
+    [Header("Mounting")]
+    public MountedWeaponSize Size = MountedWeaponSize.SMALL;
+
     [Header("Shooting")]
     public ProjectileType Type = ProjectileType.PROJECTILE;
     public bool AnimationDriven = false;
@@ -38,6 +41,17 @@ public class MountedWeapon : NetBehaviour
 
     public bool TargetInSights { get; private set; }
 
+    public NetAnimator Anim
+    {
+        get
+        {
+            if (_anim == null)
+                _anim = GetComponentInChildren<NetAnimator>();
+            return _anim;
+        }
+    }
+    private NetAnimator _anim;
+
     private float timer;
 
     private void Awake()
@@ -45,6 +59,16 @@ public class MountedWeapon : NetBehaviour
         var sync = GetComponent<NetPosSync>();
         sync.SendRate = 5f;
         sync.SyncRotation = true;
+
+        if(MuzzleSpots.Length == 0)
+        {
+            Debug.LogError($"Missing muzzle for mounted weapon {name}.");
+        }
+
+        if(AnimationDriven && GetComponentInChildren<NetAnimator>() == null)
+        {
+            Debug.LogError($"This mounted weapon {name} is animation driven, but no net animator was found. Add it!");
+        }
     }
 
     private void Update()
@@ -70,10 +94,16 @@ public class MountedWeapon : NetBehaviour
         delta = Mathf.Abs(Mathf.DeltaAngle(finalAngle, realTargetAngle));
         TargetInSights = delta <= InSightsMinAngle;
 
-        transform.localEulerAngles = new Vector3(0f, 0f, finalAngle);
+        transform.eulerAngles = new Vector3(0f, 0f, finalAngle);
 
         if (AnimationDriven)
+        {
+            if (JNet.IsServer && Anim != null)
+            {
+                Anim.SetBool("Shoot", Fire);
+            }
             return;
+        }
 
         float interval = 1f / (RPM / 60f);
         timer += Time.deltaTime;

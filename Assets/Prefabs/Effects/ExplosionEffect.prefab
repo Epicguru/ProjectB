@@ -118,7 +118,7 @@ MonoBehaviour:
   m_Color: {r: 1, g: 0.9463697, b: 0.7216981, a: 1}
   m_Intensity: 5
   m_LightVolumeOpacity: 0
-  m_ApplyToSortingLayers: 0000000083d59b75890d85ed
+  m_ApplyToSortingLayers: 0000000083d59b75090818ac890d85ed6f564abe21fe11c2a16212226b94c3120b0d04bb
   m_LightCookieSprite: {fileID: 0}
   m_UseNormalMap: 1
   m_LightOrder: 0
@@ -9720,7 +9720,7 @@ GameObject:
   - component: {fileID: 328924771996032063}
   - component: {fileID: 989012869}
   m_Layer: 0
-  m_Name: ExplosionParticles
+  m_Name: ExplosionEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

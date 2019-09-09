@@ -235,7 +235,8 @@ MonoBehaviour:
   Enabled: 1
   Penetrable: 1
   Toughness: 0.4
-  HitEffect: {fileID: 0}
+  HitEffect: {fileID: 6664402667378699907, guid: 56ebb577586cc074ab9cea766511b0c9,
+    type: 3}
   ReflectionChance: 0.6
   AutoGetHealth: 1
   Health: {fileID: 0}
@@ -629,7 +630,8 @@ MonoBehaviour:
   Enabled: 1
   Penetrable: 1
   Toughness: 0.7
-  HitEffect: {fileID: 0}
+  HitEffect: {fileID: 6664402667378699907, guid: 56ebb577586cc074ab9cea766511b0c9,
+    type: 3}
   ReflectionChance: 1
   AutoGetHealth: 1
   Health: {fileID: 0}

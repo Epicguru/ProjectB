@@ -278,7 +278,10 @@ MonoBehaviour:
   BaseReflectionChance: 1
   MaxReflections: 2
   HeadOnCoefficient: 0.1
-  HitEffectPrefab: {fileID: 0}
+  HitEffectPrefab: {fileID: 1553063059223397287, guid: a6657d0218ac66f4da091eedeff3a66d,
+    type: 3}
+  ReflectEffectPrefab: {fileID: -7279460706411260999, guid: 30284216715cfb243bd48ac254e5bd8e,
+    type: 3}
   Tracer: {fileID: 5031809783676560275}
   TracerLength: 15
   Seed: 0
