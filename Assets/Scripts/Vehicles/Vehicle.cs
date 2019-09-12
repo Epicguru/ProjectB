@@ -1,4 +1,5 @@
 ﻿using JNetworking;
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(VehicleMovement))]
@@ -8,6 +9,8 @@ using UnityEngine;
 [RequireComponent(typeof(NetPosSync))]
 public class Vehicle : MonoBehaviour
 {
+    public static List<Vehicle> AllVehicles = new List<Vehicle>();
+
     public VehicleMovement Movement
     {
         get
@@ -64,5 +67,41 @@ public class Vehicle : MonoBehaviour
     private void Awake()
     {
         NetPosSync.SyncRotation = true;
+        AllVehicles.Add(this);
+    }
+
+    private void OnDestroy()
+    {
+        if (AllVehicles.Contains(this))
+        {
+            AllVehicles.Remove(this);
+        }
+    }
+
+    [Command("Mounts a weapon on to a named ship.")]
+    public static string MountWeapon(string vehicleName, int slot, string weaponName, bool forAll)
+    {
+        if (string.IsNullOrWhiteSpace(weaponName))
+            weaponName = null;
+
+        int count = 0;
+        foreach (var veh in AllVehicles)
+        {
+            if (veh.gameObject.name.ToLower().Contains(vehicleName.ToLower()))
+            {
+                veh.MountedWeapons.SetWeapon(slot, weaponName);
+
+                if (!forAll)
+                {
+                    return $"Placed {weaponName} in spot {veh.MountedWeapons.GetMountSpot(slot).Name} on vehicle {veh.Name} ({veh.gameObject.name}).";
+                }
+                else
+                {
+                    count++;
+                }
+            }
+        }
+
+        return $"Placed weapon on {count} vehicles.";
     }
 }

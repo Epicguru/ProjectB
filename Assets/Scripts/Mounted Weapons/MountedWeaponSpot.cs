@@ -18,6 +18,8 @@ public class MountedWeaponSpot : MonoBehaviour, IParentNode
     public string Name = "Spot A";
     public MountedWeaponSize Size = MountedWeaponSize.SMALL;
 
+    public VehicleMountedWeapons Vehicle { get; set; }
+
     // NOTE - Only has current value on the server.
     public MountedWeapon CurrentWeapon { get; private set; }
 
@@ -48,7 +50,18 @@ public class MountedWeaponSpot : MonoBehaviour, IParentNode
     /// </summary>
     public void SetMountedWeapon(MountedWeapon instance)
     {
-        if(instance == null)
+        if (!JNet.IsServer)
+        {
+            Debug.LogError("Cannot set mounted weapon when not on server.");
+            return;
+        }
+        if (this.Size != instance.Size)
+        {
+            Debug.LogError($"Size is not correct. Expected {this.Size}, got {instance.Size}... Weapon will not be placed.");
+            return;
+        }
+
+        if (instance == null)
         {
             if(CurrentWeapon != null)
             {

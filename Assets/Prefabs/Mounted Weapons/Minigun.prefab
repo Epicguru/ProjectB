@@ -647,12 +647,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TargetPos: {x: 0, y: 0}
   Fire: 0
+  Size: 0
   Type: 0
   AnimationDriven: 0
   MuzzleSpots:
   - {fileID: 1868610783}
   ProjectileSpeed: 70
   RPM: 800
+  TurnToTarget: 1
+  MaxTurnSpeed: 180
+  InSightsMinAngle: 5
+  IdleAngle: 0
   AngleOffset: {x: 0, y: 5}
   HitscanRange: 10
   MuzzleFlashPrefab: {fileID: 917617540678324126, guid: dc6342cf8b7c3484690f7eac81aa45fc,

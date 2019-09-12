@@ -273,6 +273,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TargetPos: {x: 1.05, y: 0.75}
   Fire: 0
+  Size: 0
   Type: 1
   AnimationDriven: 1
   MuzzleSpots:
