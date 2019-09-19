@@ -2028,6 +2028,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff9e9927a4b4ba9429c0cb49887097e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  LinesCameraEvent: 20
+  LineMat: {fileID: 2100000, guid: 022234347621a56449b3c24ec1389bd3, type: 2}
 --- !u!114 &519420038
 MonoBehaviour:
   m_ObjectHideFlags: 0
