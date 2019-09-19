@@ -473,7 +473,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28ad9498e9aaaf44c8e43c33feda0752, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Weapon: {fileID: 61230670, guid: 8110493309f385e4cbf888098821e801, type: 3}
   Spots: []
 --- !u!1 &6239707007500484510
 GameObject:

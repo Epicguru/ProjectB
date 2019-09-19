@@ -1775,7 +1775,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28ad9498e9aaaf44c8e43c33feda0752, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Weapon: {fileID: 2139982287759964203, guid: 2936dc2a93313bf4d8471d3e82cbf4d4, type: 3}
   Spots: []
 --- !u!114 &853404952110498705
 MonoBehaviour:
