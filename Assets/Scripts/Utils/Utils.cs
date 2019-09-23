@@ -5,6 +5,11 @@ using UnityEngine;
 public static class Utils
 {
     /// <summary>
+    /// Multiply by a value that is in meters to convert to Unit units.
+    /// </summary>
+    public const float METERS_TO_UNITS = 0.1f;
+
+    /// <summary>
     /// Gets the angle, in degrees, from this vector towards the target vector. Assumes both this vector and the target
     /// vector are points.
     /// </summary>

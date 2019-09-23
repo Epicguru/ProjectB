@@ -61,6 +61,13 @@ public class Vehicle : MonoBehaviour
         }
     }
     private NetPosSync _posSync;
+    public Rigidbody2D Body
+    {
+        get
+        {
+            return Movement.Body;
+        }
+    }
 
     public string Name = "My Vehicle";
 
