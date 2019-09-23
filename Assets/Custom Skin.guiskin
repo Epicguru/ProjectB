@@ -182,9 +182,9 @@ MonoBehaviour:
       m_ScaledBackgrounds: []
       m_TextColor: {r: 0, g: 0, b: 0, a: 1}
     m_Border:
-      m_Left: 14
+      m_Left: 32
       m_Right: 0
-      m_Top: 14
+      m_Top: 32
       m_Bottom: 0
     m_Margin:
       m_Left: 4
