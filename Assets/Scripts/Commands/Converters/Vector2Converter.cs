@@ -2,7 +2,7 @@
 using System.Reflection;
 using UnityEngine;
 
-namespace Converters
+namespace ProjectB.Commands.Converters
 {
     public class Vector2Converter : VarConverter
     {

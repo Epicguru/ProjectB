@@ -1,7 +1,10 @@
 ﻿
-public enum MountedWeaponSize
+namespace ProjectB.Vehicles.Weapons
 {
-    SMALL,
-    MEDIUM,
-    LARGE
+    public enum MountedWeaponSize
+    {
+        SMALL,
+        MEDIUM,
+        LARGE
+    }
 }

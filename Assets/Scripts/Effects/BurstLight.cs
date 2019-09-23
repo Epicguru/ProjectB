@@ -1,28 +1,29 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Experimental.Rendering.LWRP;
 
-public class BurstLight : MonoBehaviour
+namespace ProjectB.Effects
 {
-    public Light2D Light;
-    public AnimationCurve Curve = AnimationCurve.EaseInOut(0f, 1f, 1f, 0f);
-    public float MaxIntensity = 2f;
-    public float Duration = 1f;
-
-    private float timer;
-
-    private void UponSpawn()
+    public class BurstLight : MonoBehaviour
     {
-        timer = 0f;
-    }
+        public Light2D Light;
+        public AnimationCurve Curve = AnimationCurve.EaseInOut(0f, 1f, 1f, 0f);
+        public float MaxIntensity = 2f;
+        public float Duration = 1f;
 
-    private void Update()
-    {
-        timer += Time.deltaTime;
-        float p = Mathf.Clamp01(timer / Duration);
-        float intensity = Curve.Evaluate(p) * MaxIntensity;
+        private float timer;
 
-        Light.intensity = intensity;
+        private void UponSpawn()
+        {
+            timer = 0f;
+        }
+
+        private void Update()
+        {
+            timer += Time.deltaTime;
+            float p = Mathf.Clamp01(timer / Duration);
+            float intensity = Curve.Evaluate(p) * MaxIntensity;
+
+            Light.intensity = intensity;
+        }
     }
 }

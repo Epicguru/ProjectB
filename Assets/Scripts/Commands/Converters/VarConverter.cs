@@ -1,7 +1,7 @@
 ﻿
 using System;
 
-namespace Converters
+namespace ProjectB.Commands.Converters
 {
     public abstract class VarConverter
     {

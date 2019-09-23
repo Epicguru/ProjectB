@@ -1,47 +1,51 @@
 ﻿
 using JNetworking;
+using ProjectB.Ballistics;
 using UnityEngine;
 
-public class ProjectileSpawn : EditorTool
+namespace ProjectB.DevTools
 {
-    public Projectile Projectile;
-    public float Speed = 10f;
-
-    private Vector2 startPos;
-
-    public override void DrawWindow()
+    public class ProjectileSpawn : EditorTool
     {
-        GUILayout.Label("Press and hold space bar to aim and fire a projectile.");
-        GUILayout.Space(10);
-        GUILayout.Label($"Speed: {Speed:F1}");
-        Speed = GUILayout.HorizontalSlider(Speed, 0f, 500f);
-    }
+        public Projectile Projectile;
+        public float Speed = 10f;
 
-    private void Update()
-    {
-        if (Projectile == null)
-            return;
-        if (!IsEnabled)
-            return;
+        private Vector2 startPos;
 
-        if (!JNet.IsServer)
-            return;
-
-        if (Input.GetKeyDown(KeyCode.Space))
+        public override void DrawWindow()
         {
-            startPos = InputManager.MousePos;
-        }
-        if (Input.GetKeyUp(KeyCode.Space))
-        {
-            Vector2 direction = InputManager.MousePos - startPos;
-            direction.Normalize();
-
-            Projectile.Spawn(startPos, direction, Speed);
+            GUILayout.Label("Press and hold space bar to aim and fire a projectile.");
+            GUILayout.Space(10);
+            GUILayout.Label($"Speed: {Speed:F1}");
+            Speed = GUILayout.HorizontalSlider(Speed, 0f, 500f);
         }
 
-        if (Input.GetKeyDown(KeyCode.Q))
+        private void Update()
         {
-            Projectile.Spawn(new Vector2(0f, -10f), Vector2.up, 15f);
+            if (Projectile == null)
+                return;
+            if (!IsEnabled)
+                return;
+
+            if (!JNet.IsServer)
+                return;
+
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                startPos = InputManager.MousePos;
+            }
+            if (Input.GetKeyUp(KeyCode.Space))
+            {
+                Vector2 direction = InputManager.MousePos - startPos;
+                direction.Normalize();
+
+                Projectile.Spawn(startPos, direction, Speed);
+            }
+
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                Projectile.Spawn(new Vector2(0f, -10f), Vector2.up, 15f);
+            }
         }
     }
 }

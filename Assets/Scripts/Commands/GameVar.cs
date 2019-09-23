@@ -1,23 +1,25 @@
 ﻿
-using Converters;
+using ProjectB.Commands.Converters;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
-public class GameVar
+namespace ProjectB.Commands
 {
-    public string Name { get; }
-    public GameVarAttribute Attribute { get; }
-    public FInfo FInfo { get; }
-    public VarConverter Converter;
-    public bool IsValid { get; }
-    private static Dictionary<Type, VarConverter> converters;
-
-    static GameVar()
+    public class GameVar
     {
-        // BOOKMARK where converters are loaded.
-        converters = new Dictionary<Type, VarConverter>
+        public string Name { get; }
+        public GameVarAttribute Attribute { get; }
+        public FInfo FInfo { get; }
+        public VarConverter Converter;
+        public bool IsValid { get; }
+        private static Dictionary<Type, VarConverter> converters;
+
+        static GameVar()
+        {
+            // BOOKMARK where converters are loaded.
+            converters = new Dictionary<Type, VarConverter>
         {
             { typeof(string), new StringConverter() },
             { typeof(float), new FloatConverter() },
@@ -25,46 +27,47 @@ public class GameVar
             { typeof(int), new IntConverter() },
             { typeof(Vector2), new Vector2Converter() },
         };
-    }
-    public static VarConverter GetConverter(Type type)
-    {
-        if (converters.ContainsKey(type))
-            return converters[type];
-        else
-            return null;
-    }
-
-    public GameVar(GameVarAttribute atr, FieldInfo field, PropertyInfo prop)
-    {
-        if (string.IsNullOrWhiteSpace(atr.Name))
+        }
+        public static VarConverter GetConverter(Type type)
         {
-            if (prop != null)
-                Name = prop.Name.ToLowerInvariant();
+            if (converters.ContainsKey(type))
+                return converters[type];
             else
-                Name = field.Name.ToLowerInvariant();
+                return null;
         }
-        else
-        {
-            Name = atr.Name.Trim().ToLowerInvariant();
-        }
-        
-        Attribute = atr;
 
-        if (prop != null)
-            FInfo = new FInfo(prop);
-        else
-            FInfo = new FInfo(field);
-
-        Converter = GetConverter(FInfo.MemberType);
-
-        if(Converter == null)
+        public GameVar(GameVarAttribute atr, FieldInfo field, PropertyInfo prop)
         {
-            Debug.LogError($"Failed to find converter for GameVar of type: {FInfo.MemberType}. Bad stuff is about to happen.");
-            IsValid = false;
-        }
-        else
-        {
-            IsValid = true;
+            if (string.IsNullOrWhiteSpace(atr.Name))
+            {
+                if (prop != null)
+                    Name = prop.Name.ToLowerInvariant();
+                else
+                    Name = field.Name.ToLowerInvariant();
+            }
+            else
+            {
+                Name = atr.Name.Trim().ToLowerInvariant();
+            }
+
+            Attribute = atr;
+
+            if (prop != null)
+                FInfo = new FInfo(prop);
+            else
+                FInfo = new FInfo(field);
+
+            Converter = GetConverter(FInfo.MemberType);
+
+            if (Converter == null)
+            {
+                Debug.LogError($"Failed to find converter for GameVar of type: {FInfo.MemberType}. Bad stuff is about to happen.");
+                IsValid = false;
+            }
+            else
+            {
+                IsValid = true;
+            }
         }
     }
 }

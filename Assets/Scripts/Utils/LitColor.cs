@@ -1,12 +1,16 @@
 ﻿
 using UnityEngine;
 
-public class LitColor : MonoBehaviour
+namespace ProjectB
 {
-    public Color Colour = Color.white;
-
-    private void Awake()
+    public class LitColor : MonoBehaviour
     {
-        GetComponent<Renderer>().material.SetColor("_Color", Colour);
+        public Color Colour = Color.white;
+
+        private void Awake()
+        {
+            GetComponent<Renderer>().material.SetColor("_Color", Colour);
+        }
     }
 }
+

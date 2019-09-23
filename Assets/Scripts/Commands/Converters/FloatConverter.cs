@@ -1,7 +1,7 @@
 ﻿
 using System.Reflection;
 
-namespace Converters
+namespace ProjectB.Commands.Converters
 {
     public class FloatConverter : VarConverter
     {

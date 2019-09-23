@@ -1,12 +1,15 @@
 ﻿
 using UnityEngine;
 
-public class RotatingPart : MonoBehaviour
+namespace ProjectB.Effects
 {
-    public float RotationSpeed = 360f;
-
-    private void Update()
+    public class RotatingPart : MonoBehaviour
     {
-        transform.Rotate(0f, 0f, RotationSpeed * Time.deltaTime);
+        public float RotationSpeed = 360f;
+
+        private void Update()
+        {
+            transform.Rotate(0f, 0f, RotationSpeed * Time.deltaTime);
+        }
     }
 }

@@ -1,14 +1,17 @@
 ﻿
 using System;
 
-[AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
-public class CommandAttribute : Attribute
+namespace ProjectB.Commands
 {
-    public string Tooltip { get; private set; }
-    public string Name;
-
-    public CommandAttribute(string tooltip = "Not specfied")
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
+    public class CommandAttribute : Attribute
     {
-        this.Tooltip = tooltip;
+        public string Tooltip { get; private set; }
+        public string Name;
+
+        public CommandAttribute(string tooltip = "Not specfied")
+        {
+            this.Tooltip = tooltip;
+        }
     }
 }

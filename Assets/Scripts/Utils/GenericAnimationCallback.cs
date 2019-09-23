@@ -1,12 +1,13 @@
-﻿using System;
-using UnityEngine;
-using UnityEngine.Events;
+﻿using UnityEngine;
 
-[RequireComponent(typeof(Animator))]
-public class GenericAnimationCallback : MonoBehaviour
+namespace ProjectB
 {
-    public void Event(AnimationEvent e)
+    [RequireComponent(typeof(Animator))]
+    public class GenericAnimationCallback : MonoBehaviour
     {
-        SendMessageUpwards("UponAnimationEvent", e, SendMessageOptions.DontRequireReceiver);
+        public void Event(AnimationEvent e)
+        {
+            SendMessageUpwards("UponAnimationEvent", e, SendMessageOptions.DontRequireReceiver);
+        }
     }
 }

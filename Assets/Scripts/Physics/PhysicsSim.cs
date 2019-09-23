@@ -2,40 +2,44 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PhysicsSim : MonoBehaviour
+namespace ProjectB.Physics
 {
-    public static bool Paused
+    public class PhysicsSim : MonoBehaviour
     {
-        get
+        public static bool Paused
         {
-            return _paused;
+            get
+            {
+                return _paused;
+            }
+            set
+            {
+                if (value == _paused)
+                    return;
+
+                _paused = value;
+            }
         }
-        set
+
+        private static bool _paused;
+
+        private float timer;
+
+        private void Update()
         {
-            if (value == _paused)
+            if (Physics2D.autoSimulation)
                 return;
 
-            _paused = value;
-        }
-    }
+            timer += Time.deltaTime;
+            while (timer >= Time.fixedDeltaTime)
+            {
+                timer -= Time.fixedDeltaTime;
 
-    private static bool _paused;
-
-    private float timer;
-
-    private void Update()
-    {
-        if (Physics2D.autoSimulation)
-            return;
-
-        timer += Time.deltaTime;
-        while(timer >= Time.fixedDeltaTime)
-        {
-            timer -= Time.fixedDeltaTime;
-
-            // Run the simulation when not paused.
-            if(!Paused)
-                Physics2D.Simulate(Time.fixedDeltaTime);
+                // Run the simulation when not paused.
+                if (!Paused)
+                    Physics2D.Simulate(Time.fixedDeltaTime);
+            }
         }
     }
 }
+

@@ -1,68 +1,70 @@
 ﻿using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
 
-[Serializable]
-[PostProcess(typeof(ScreenWarpRenderer), PostProcessEvent.AfterStack, "Custom/Screen Warp")]
-public sealed class ScreenWarp : PostProcessEffectSettings
+namespace ProjectB.Effects.PostProcessing
 {
-    [Range(0f, 3f), Tooltip("Global warp effect size scale.")]
-    public FloatParameter sizeScale = new FloatParameter { value = 1f };
-
-    [Range(-2f, 2f), Tooltip("Global warp effect intensity scale.")]
-    public FloatParameter intensityScale = new FloatParameter { value = 1f };
-}
-
-public sealed class ScreenWarpRenderer : PostProcessEffectRenderer<ScreenWarp>
-{
-    private static ScreenWarpRenderer Instance;
-    private static readonly Vector4[] points = new Vector4[32];
-    private static int lastIndex;
-
-    public static void AddPoint(Vector2 pos, float size, float scale)
+    [Serializable]
+    [PostProcess(typeof(ScreenWarpRenderer), PostProcessEvent.AfterStack, "Custom/Screen Warp")]
+    public sealed class ScreenWarp : PostProcessEffectSettings
     {
-        AddPoint(new Vector4(pos.x, pos.y, size, scale));
+        [Range(0f, 3f), Tooltip("Global warp effect size scale.")]
+        public FloatParameter sizeScale = new FloatParameter { value = 1f };
+
+        [Range(-2f, 2f), Tooltip("Global warp effect intensity scale.")]
+        public FloatParameter intensityScale = new FloatParameter { value = 1f };
     }
 
-    public static void AddPoint(Vector4 data)
+    public sealed class ScreenWarpRenderer : PostProcessEffectRenderer<ScreenWarp>
     {
-        if(lastIndex == points.Length)
+        private static ScreenWarpRenderer Instance;
+        private static readonly Vector4[] points = new Vector4[32];
+        private static int lastIndex;
+
+        public static void AddPoint(Vector2 pos, float size, float scale)
         {
-            Debug.LogWarning("Ran out of warp points! Soft limit is 32 for optimization purposes!");
-            return;
+            AddPoint(new Vector4(pos.x, pos.y, size, scale));
         }
 
-        if(Instance != null)
+        public static void AddPoint(Vector4 data)
         {
-            data.z *= Instance.settings.sizeScale.value;
-            data.w *= Instance.settings.intensityScale.value;
+            if (lastIndex == points.Length)
+            {
+                Debug.LogWarning("Ran out of warp points! Soft limit is 32 for optimization purposes!");
+                return;
+            }
+
+            if (Instance != null)
+            {
+                data.z *= Instance.settings.sizeScale.value;
+                data.w *= Instance.settings.intensityScale.value;
+            }
+
+            if (data.z < 0f)
+                data.z = 0f;
+
+            points[lastIndex] = data;
+            lastIndex++;
         }
 
-        if (data.z < 0f)
-            data.z = 0f;
+        public override void Render(PostProcessRenderContext context)
+        {
+            if (Instance != this)
+                Instance = this;
 
-        points[lastIndex] = data;
-        lastIndex++;
-    }
+            var sheet = context.propertySheets.Get(Shader.Find("Hidden/Screen Warp"));
 
-    public override void Render(PostProcessRenderContext context)
-    {
-        if (Instance != this)
-            Instance = this;
+            Vector2 size = new Vector2(context.camera.orthographicSize * context.camera.aspect, context.camera.orthographicSize);
+            Vector2 pos = (Vector2)context.camera.transform.position - size;
 
-        var sheet = context.propertySheets.Get(Shader.Find("Hidden/Screen Warp"));
+            sheet.properties.SetInt("_PointCount", lastIndex);
+            sheet.properties.SetVector("_ScreenWorldSize", size * 2f);
+            sheet.properties.SetVector("_ScreenWorldPos", pos);
+            sheet.properties.SetVectorArray("_Points", points);
 
-        Vector2 size = new Vector2(context.camera.orthographicSize * context.camera.aspect, context.camera.orthographicSize);
-        Vector2 pos = (Vector2)context.camera.transform.position - size;
+            context.command.BlitFullscreenTriangle(context.source, context.destination, sheet, 0);
 
-        sheet.properties.SetInt("_PointCount", lastIndex);
-        sheet.properties.SetVector("_ScreenWorldSize", size * 2f);
-        sheet.properties.SetVector("_ScreenWorldPos", pos);
-        sheet.properties.SetVectorArray("_Points", points);
-
-        context.command.BlitFullscreenTriangle(context.source, context.destination, sheet, 0);
-
-        lastIndex = 0;
+            lastIndex = 0;
+        }
     }
 }

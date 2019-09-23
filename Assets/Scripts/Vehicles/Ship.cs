@@ -1,16 +1,20 @@
 ﻿using UnityEngine;
 
-[RequireComponent(typeof(Vehicle))]
-public class Ship : MonoBehaviour
+namespace ProjectB.Vehicles
 {
-    public Vehicle Vehicle
+    [RequireComponent(typeof(Vehicle))]
+    public class Ship : MonoBehaviour
     {
-        get
+        public Vehicle Vehicle
         {
-            if (_vehicle == null)
-                _vehicle = GetComponent<Vehicle>();
-            return _vehicle;
+            get
+            {
+                if (_vehicle == null)
+                    _vehicle = GetComponent<Vehicle>();
+                return _vehicle;
+            }
         }
+        private Vehicle _vehicle;
     }
-    private Vehicle _vehicle;
 }
+

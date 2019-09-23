@@ -1,30 +1,31 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class RigidbodyDrag : EditorTool
+namespace ProjectB.DevTools
 {
-    public float ForceScalar = 1000f;
-
-    public override void DrawWindow()
+    public class RigidbodyDrag : EditorTool
     {
-        GUILayout.Label($"Force: {ForceScalar:F1} Newtons");
-        ForceScalar = GUILayout.HorizontalSlider(ForceScalar, 0.1f, 10000f);
-    }
+        public float ForceScalar = 1000f;
 
-    private void FixedUpdate()
-    {
-        if (!IsEnabled)
-            return;
-
-        var rb = Tools.SelectedRigidbody;
-        if(rb != null)
+        public override void DrawWindow()
         {
-            Vector2 mouse = InputManager.MousePos;
-            Vector2 diff = (mouse - rb.worldCenterOfMass);
+            GUILayout.Label($"Force: {ForceScalar:F1} Newtons");
+            ForceScalar = GUILayout.HorizontalSlider(ForceScalar, 0.1f, 10000f);
+        }
 
-            if(Input.GetMouseButton(1))
-                rb.AddForce(diff.normalized * ForceScalar, ForceMode2D.Force);
+        private void FixedUpdate()
+        {
+            if (!IsEnabled)
+                return;
+
+            var rb = Tools.SelectedRigidbody;
+            if (rb != null)
+            {
+                Vector2 mouse = InputManager.MousePos;
+                Vector2 diff = (mouse - rb.worldCenterOfMass);
+
+                if (Input.GetMouseButton(1))
+                    rb.AddForce(diff.normalized * ForceScalar, ForceMode2D.Force);
+            }
         }
     }
 }

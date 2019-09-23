@@ -1,69 +1,73 @@
-﻿using UnityEngine;
+﻿using ProjectB.Units;
+using UnityEngine;
 using UnityEngine.Rendering;
 
-[RequireComponent(typeof(CameraController))]
-public class GameCamera : MonoBehaviour
+namespace ProjectB
 {
-    public static GameCamera Instance { get; private set; }
-    public static Camera Camera { get { return Instance.Cam; } }
-    public static CameraController Controller { get { return Instance.CamController; } }
-
-    public CameraEvent LinesCameraEvent = CameraEvent.AfterEverything;
-    public Material LineMat;
-
-    public Camera Cam
+    [RequireComponent(typeof(CameraController))]
+    public class GameCamera : MonoBehaviour
     {
-        get
+        public static GameCamera Instance { get; private set; }
+        public static Camera Camera { get { return Instance.Cam; } }
+        public static CameraController Controller { get { return Instance.CamController; } }
+
+        public CameraEvent LinesCameraEvent = CameraEvent.AfterEverything;
+        public Material LineMat;
+
+        public Camera Cam
         {
-            if (_cam == null)
-                _cam = GetComponent<Camera>();
-            return _cam;
+            get
+            {
+                if (_cam == null)
+                    _cam = GetComponent<Camera>();
+                return _cam;
+            }
         }
-    }
-    private Camera _cam;
-    public CameraController CamController
-    {
-        get
+        private Camera _cam;
+        public CameraController CamController
         {
-            if (_controller == null)
-                _controller = GetComponent<CameraController>();
-            return _controller;
+            get
+            {
+                if (_controller == null)
+                    _controller = GetComponent<CameraController>();
+                return _controller;
+            }
         }
-    }
-    private CameraController _controller;
+        private CameraController _controller;
 
-    private void Awake()
-    {
-        Instance = this;
+        private void Awake()
+        {
+            Instance = this;
 
-        RenderPipelineManager.endCameraRendering += RenderLines;
-    }
+            RenderPipelineManager.endCameraRendering += RenderLines;
+        }
 
-    private void RenderLines(ScriptableRenderContext context, Camera cam)
-    {
-        if (!Application.isPlaying)
-            return;
+        private void RenderLines(ScriptableRenderContext context, Camera cam)
+        {
+            if (!Application.isPlaying)
+                return;
 
-        GL.PushMatrix();
-        LineMat.SetPass(0);
-        GL.LoadOrtho();
+            GL.PushMatrix();
+            LineMat.SetPass(0);
+            GL.LoadOrtho();
 
-        GL.Begin(GL.LINES);
+            GL.Begin(GL.LINES);
 
-        Unit.GL_DrawAllSelected();
+            Unit.GL_DrawAllSelected();
 
-        GL.End();
-        GL.PopMatrix();
-    }
+            GL.End();
+            GL.PopMatrix();
+        }
 
-    public static void DrawLine(Vector2 worldStart, Vector2 worldEnd, Color color)
-    {
-        Vector2 screenSize = new Vector2(Screen.width, Screen.height);
-        Vector2 screenStart = Camera.WorldToScreenPoint(worldStart) / screenSize;
-        Vector2 screenEnd = Camera.WorldToScreenPoint(worldEnd) / screenSize;
+        public static void DrawLine(Vector2 worldStart, Vector2 worldEnd, Color color)
+        {
+            Vector2 screenSize = new Vector2(Screen.width, Screen.height);
+            Vector2 screenStart = Camera.WorldToScreenPoint(worldStart) / screenSize;
+            Vector2 screenEnd = Camera.WorldToScreenPoint(worldEnd) / screenSize;
 
-        GL.Color(color);
-        GL.Vertex(screenStart);
-        GL.Vertex(screenEnd);
+            GL.Color(color);
+            GL.Vertex(screenStart);
+            GL.Vertex(screenEnd);
+        }
     }
 }

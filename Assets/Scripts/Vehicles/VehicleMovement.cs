@@ -1,31 +1,35 @@
 ﻿
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D))]
-public class VehicleMovement : MonoBehaviour
+namespace ProjectB.Vehicles
 {
-    public Rigidbody2D Body
+    [RequireComponent(typeof(Rigidbody2D))]
+    public class VehicleMovement : MonoBehaviour
     {
-        get
+        public Rigidbody2D Body
         {
-            if (_body == null)
-                _body = GetComponent<Rigidbody2D>();
-            return _body;
+            get
+            {
+                if (_body == null)
+                    _body = GetComponent<Rigidbody2D>();
+                return _body;
+            }
+        }
+        private Rigidbody2D _body;
+
+        public float ForwardsThrust = 0f;
+        public float Torque = 0f;
+
+        private void Awake()
+        {
+            Body.gravityScale = 0f;
+        }
+
+        private void FixedUpdate()
+        {
+            Body.AddForce(transform.right * ForwardsThrust);
+            Body.AddTorque(Torque);
         }
     }
-    private Rigidbody2D _body;
-
-    public float ForwardsThrust = 0f;
-    public float Torque = 0f;
-
-    private void Awake()
-    {
-        Body.gravityScale = 0f;
-    }
-
-    private void FixedUpdate()
-    {
-        Body.AddForce(transform.right * ForwardsThrust);
-        Body.AddTorque(Torque);
-    }
 }
+

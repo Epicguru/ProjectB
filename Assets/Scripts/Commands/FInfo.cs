@@ -2,80 +2,83 @@
 using System;
 using System.Reflection;
 
-public class FInfo
+namespace ProjectB.Commands
 {
-    public bool IsProperty { get { return prop != null; } }
-    public bool IsStatic
+    public class FInfo
     {
-        get
+        public bool IsProperty { get { return prop != null; } }
+        public bool IsStatic
         {
-            if (IsProperty)
+            get
             {
-                var get = prop.GetGetMethod();
-                if(get != null)
+                if (IsProperty)
                 {
-                    return get.IsStatic;
+                    var get = prop.GetGetMethod();
+                    if (get != null)
+                    {
+                        return get.IsStatic;
+                    }
+                    else
+                    {
+                        var set = prop.GetSetMethod();
+                        return set.IsStatic;
+                    }
                 }
                 else
                 {
-                    var set = prop.GetSetMethod();
-                    return set.IsStatic;
+                    return field.IsStatic;
                 }
             }
-            else
+        }
+        public bool CanWrite
+        {
+            get
             {
-                return field.IsStatic;
+                return !IsProperty || prop.CanWrite;
             }
         }
-    }
-    public bool CanWrite
-    {
-        get
+        public bool CanRead
         {
-            return !IsProperty || prop.CanWrite;
+            get
+            {
+                return !IsProperty || prop.CanRead;
+            }
         }
-    }
-    public bool CanRead
-    {
-        get
+        public Type MemberType
         {
-            return !IsProperty || prop.CanRead;
+            get
+            {
+                return IsProperty ? prop.PropertyType : field.FieldType;
+            }
         }
-    }
-    public Type MemberType
-    {
-        get
+
+        private PropertyInfo prop;
+        private FieldInfo field;
+
+        public FInfo(PropertyInfo info)
         {
-            return IsProperty ? prop.PropertyType : field.FieldType;
+            this.prop = info;
         }
-    }
 
-    private PropertyInfo prop;
-    private FieldInfo field;
+        public FInfo(FieldInfo info)
+        {
+            this.field = info;
+        }
 
-    public FInfo(PropertyInfo info)
-    {
-        this.prop = info;
-    }
+        public void SetValue(object instance, object value)
+        {
+            if (IsProperty)
+                prop.SetValue(instance, value);
+            else
+                field.SetValue(instance, value);
+        }
 
-    public FInfo(FieldInfo info)
-    {
-        this.field = info;
-    }
-
-    public void SetValue(object instance, object value)
-    {
-        if (IsProperty)
-            prop.SetValue(instance, value);
-        else
-            field.SetValue(instance, value);
-    }
-
-    public object GetValue(object instance)
-    {
-        if (IsProperty)
-            return prop.GetValue(instance);
-        else
-            return field.GetValue(instance);
+        public object GetValue(object instance)
+        {
+            if (IsProperty)
+                return prop.GetValue(instance);
+            else
+                return field.GetValue(instance);
+        }
     }
 }

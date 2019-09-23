@@ -1,14 +1,16 @@
 ﻿
 using System;
-using UnityEngine;
 
-[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
-public class GameVarAttribute : Attribute
+namespace ProjectB
 {
-    public string Name { get; set; }
-
-    public GameVarAttribute()
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
+    public class GameVarAttribute : Attribute
     {
-        // Nothing to do here.
+        public string Name { get; set; }
+
+        public GameVarAttribute()
+        {
+            // Nothing to do here.
+        }
     }
 }

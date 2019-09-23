@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 
-public class ReadOnlyAttribute : PropertyAttribute
+namespace ProjectB
 {
+    public class ReadOnlyAttribute : PropertyAttribute
+    {
 
+    }
 }

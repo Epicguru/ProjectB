@@ -1,18 +1,21 @@
 ﻿
 using System;
 
-public struct CommandDrawable
+namespace ProjectB.Commands
 {
-    public Action DrawAction;
-
-    public CommandDrawable(Action draw)
+    public struct CommandDrawable
     {
-        this.DrawAction = draw;
-    }
+        public Action DrawAction;
 
-    public void Draw()
-    {
-        if (DrawAction != null)
-            DrawAction.Invoke();
+        public CommandDrawable(Action draw)
+        {
+            this.DrawAction = draw;
+        }
+
+        public void Draw()
+        {
+            if (DrawAction != null)
+                DrawAction.Invoke();
+        }
     }
 }
