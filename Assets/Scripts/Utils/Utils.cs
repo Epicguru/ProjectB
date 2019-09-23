@@ -87,6 +87,21 @@ namespace ProjectB
             self.y = Mathf.Min(container.y + container.height, self.y + self.height) - self.height;
         }
 
+        public static Vector2[] GetWorldCorners(this BoxCollider2D box)
+        {
+            Vector2[] points = new Vector2[4];
+
+            points[0] = box.transform.TransformPoint(box.offset + new Vector2(box.size.x * -0.5f, box.size.y * 0.5f));
+
+            points[1] = box.transform.TransformPoint(box.offset + new Vector2(box.size.x * 0.5f, box.size.y * 0.5f));
+
+            points[2] = box.transform.TransformPoint(box.offset + new Vector2(box.size.x * 0.5f, box.size.y * -0.5f));
+
+            points[3] = box.transform.TransformPoint(box.offset + new Vector2(box.size.x * -0.5f, box.size.y * -0.5f));
+
+            return points;
+        }
+
         #region Commands & GameVars
 
         [Command("Gets an overview of the network state.")]

@@ -85,73 +85,22 @@ namespace ProjectB.Vehicles
             }
         }
 
-        public Collider2D SelectionCollider;
         public string Name { get { return Unit.Name; } }
 
         private void Awake()
         {
             NetPosSync.SyncRotation = true;
-            AllVehicles.Add(this);
+            AllVehicles.Add(this);            
+        }       
 
-            if (SelectionCollider == null)
-            {
-
-                SelectionCollider = GetComponentInChildren<Collider2D>();
-                if (SelectionCollider == null)
-                {
-                    Debug.LogError($"Failed to get selection collider for vehicle {Name}. Add one!");
-                }
-            }
-        }
-
-        /// <summary>
-        /// Returns the closest point on the selection collider's perimeter of this vehicle to the supplied point.
-        /// </summary>
-        /// <param name="exteriorPos">The exterior point to get the cloest point to.</param>
-        /// <returns>The closest point on the collider perimeter.</returns>
-        public Vector2 GetClosestSelectionPoint(Vector2 exteriorPos)
+        private void GL_DrawUnitSelected(Color color)
         {
-            return SelectionCollider?.ClosestPoint(exteriorPos) ?? exteriorPos;
-        }
+            Vector2[] points = Unit.SelectionCollider.GetWorldCorners();
 
-        /// <summary>
-        /// Returns the square of the distance from the supplied exterior point to the closest point on the surface of this vehicle's selection collider.
-        /// </summary>
-        /// <param name="exteriorPos">The exterior point to get the cloest point to.</param>
-        /// <returns>The square of the distance, in Unity units.</returns>
-        public float GetClosestSquareDistance(Vector2 exteriorPos)
-        {
-            Vector2 closestPoint = GetClosestSelectionPoint(exteriorPos);
-
-            return (closestPoint - exteriorPos).sqrMagnitude;
-        }
-
-        /// <summary>
-        /// Returns the the distance from the supplied exterior point to the closest point on the surface of this vehicle's selection collider.
-        /// </summary>
-        /// <param name="exteriorPos">The exterior point to get the cloest point to.</param>
-        /// <returns>The distance, in Unity units. Remember, 1 unit is roughly 10 meters.</returns>
-        public float GetClosestDistance(Vector2 exteriorPos)
-        {
-            return Mathf.Sqrt(GetClosestSquareDistance(exteriorPos));
-        }
-
-        private void UpdateUnitBounds(Unit unit)
-        {
-            Vector2 min = SelectionCollider.bounds.min;
-            Vector2 max = SelectionCollider.bounds.max;
-
-            Vector2 size = max - min;
-
-            unit.Bounds = new Rect(min, size);
-        }
-
-        private void GL_DrawUnitSelected(Unit unit)
-        {
-            // URGTODO
-            // BOOKMARK
-            // TOOD left off here.
-
+            GameCamera.DrawLine(points[0], points[1], color);
+            GameCamera.DrawLine(points[1], points[2], color);
+            GameCamera.DrawLine(points[2], points[3], color);
+            GameCamera.DrawLine(points[3], points[0], color);
         }
 
         private void OnDestroy()

@@ -1,6 +1,7 @@
 ﻿using JNetworking;
 using ProjectB.Ballistics;
 using ProjectB.Commands;
+using ProjectB.Interface;
 using System;
 using System.IO;
 using UnityEngine;
@@ -16,6 +17,7 @@ namespace ProjectB
         {
             JNet.Init("Project B");
             Spawnables.NetRegisterAll();
+            UI.AddDrawer(DrawUI);
         }
 
         private void StartClient()
@@ -70,7 +72,7 @@ namespace ProjectB
             JNet.StartServer("My Server Name", 7777, 4);
         }
 
-        private void OnGUI()
+        private void DrawUI()
         {
             if (JNet.IsClient || JNet.IsServer)
             {

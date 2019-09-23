@@ -1,4 +1,5 @@
 ﻿using ProjectB.Units;
+using ProjectB.Units.Selection;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -47,6 +48,9 @@ namespace ProjectB
             if (!Application.isPlaying)
                 return;
 
+            if (cam != GameCamera.Camera)
+                return;
+
             GL.PushMatrix();
             LineMat.SetPass(0);
             GL.LoadOrtho();
@@ -54,6 +58,7 @@ namespace ProjectB
             GL.Begin(GL.LINES);
 
             Unit.GL_DrawAllSelected();
+            UnitSelection.GL_Draw();
 
             GL.End();
             GL.PopMatrix();

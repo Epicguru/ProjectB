@@ -2,7 +2,7 @@
 using System;
 using UnityEngine;
 
-namespace ProjectB.UI
+namespace ProjectB.Interface
 {
     public class IMGUIWindow
     {
@@ -25,7 +25,7 @@ namespace ProjectB.UI
         public void OnGUI()
         {
             Rect = GUI.Window(ID, Rect, Draw, Name);
-            Rect.ClampTo(new Rect(0, 0, Screen.width, Screen.height));
+            Rect.ClampTo(new Rect(0, 0, UI.ScreenWidth, UI.ScreenHeight));
         }
 
         private void Draw(int id)

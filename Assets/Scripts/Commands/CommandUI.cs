@@ -1,6 +1,6 @@
 ﻿
 using ProjectB.Commands.Converters;
-using ProjectB.UI;
+using ProjectB.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,6 +53,8 @@ namespace ProjectB.Commands
 
         private void Awake()
         {
+            UI.AddDrawer(DrawUI);
+
             LoadCommands();
 
             Input = new IMGUIWindow(int.MaxValue, new Rect(100, 100, Width, Height), "Console", () =>
@@ -414,7 +416,7 @@ namespace ProjectB.Commands
                                     bool worked = error == null;
                                     if (!worked)
                                     {
-                                        LogText(RichText.InColour("Failed to write to variable:\n{error}", Color.yellow));
+                                        LogText(RichText.InColour($"Failed to write to variable:\n{error}", Color.yellow));
                                     }
                                     else if (GVWriteCompare)
                                     {
@@ -544,7 +546,7 @@ namespace ProjectB.Commands
             }
         }
 
-        public void OnGUI()
+        public void DrawUI()
         {
             if (open)
                 Input.OnGUI();

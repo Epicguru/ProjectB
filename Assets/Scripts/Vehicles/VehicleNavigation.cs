@@ -8,6 +8,17 @@ namespace ProjectB.Vehicles
 {
     public class VehicleNavigation : MonoBehaviour
     {
+        public Vehicle Vehicle
+        {
+            get
+            {
+                if (_vehicle == null)
+                    _vehicle = GetComponent<Vehicle>();
+                return _vehicle;
+            }
+        }
+        private Vehicle _vehicle;
+
         public VehicleMovement Movement
         {
             get
@@ -38,7 +49,7 @@ namespace ProjectB.Vehicles
 
         private void Update()
         {
-            if (Input.GetMouseButtonDown(0) && !InputManager.IsMouseInUI)
+            if (Input.GetMouseButtonDown(1) && Vehicle.Unit.IsSelected && !InputManager.IsMouseInUI)
             {
                 finalTarget = InputManager.MousePos;
                 var start = Navigation.GetClosestTile(transform.position);
