@@ -102,6 +102,15 @@ namespace ProjectB
             return points;
         }
 
+        /// <summary>
+        /// Returns a rect who's sides are increased by 2xamount whilst maintaining the center.
+        /// For example, for rect (0, 0, 2, 2) doing Inflate(1) would return (-1, -1, 3, 3).
+        /// </summary>
+        public static Rect Inflate(this Rect rect, float amount)
+        {
+            return new Rect(rect.x - amount, rect.y - amount, rect.width + amount * 2, rect.height + amount * 2);
+        }
+
         #region Commands & GameVars
 
         [Command("Gets an overview of the network state.")]

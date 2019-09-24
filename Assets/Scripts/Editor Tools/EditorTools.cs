@@ -1,4 +1,5 @@
 ﻿using JNetworking;
+using ProjectB.Interface;
 using ProjectB.Physics;
 using UnityEngine;
 
@@ -27,6 +28,8 @@ namespace ProjectB.DevTools
                 tool.Tools = this;
             }
             InvokeRepeating("StepTick", 0.2f, 0.2f);
+
+            UI.AddDrawer(DrawUI);
         }
 
         private void Update()
@@ -50,7 +53,7 @@ namespace ProjectB.DevTools
             PhysicsSim.Paused = PhysicsPaused;
         }
 
-        private void OnGUI()
+        private void DrawUI()
         {
             bool netWorking = JNet.IsClient || JNet.IsServer;
             if (!netWorking)

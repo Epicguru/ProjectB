@@ -1,4 +1,5 @@
 ﻿
+using ProjectB.Vehicles;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,7 +7,21 @@ namespace ProjectB.Units
 {
     public partial class Unit : MonoBehaviour
     {
-        public static List<Unit> AllActiveUnits = new List<Unit>();
+        public static readonly List<Unit> AllActiveUnits = new List<Unit>();
+        
+        /// <summary>
+        /// Gets all active units that are currently selected.
+        /// Quite expensive since it itterates through all units, so use sparingly.
+        /// </summary>
+        /// <returns></returns>
+        public static IEnumerable<Unit> GetAllSelected()
+        {
+            foreach (var unit in AllActiveUnits)
+            {
+                if(unit != null && unit.IsSelected)
+                    yield return unit;
+            }
+        }
 
         public static void DeselectAll()
         {
@@ -33,6 +48,19 @@ namespace ProjectB.Units
         [Header("Selection")]
         public BoxCollider2D SelectionCollider;
         public bool IsSelected;
+
+        public bool IsVehicle { get { return Vehicle != null; } }
+
+        public Vehicle Vehicle
+        {
+            get
+            {
+                if (_vehicle == null)
+                    _vehicle = GetComponent<Vehicle>();
+                return _vehicle;
+            }
+        }
+        private Vehicle _vehicle;
 
         private void Awake()
         {

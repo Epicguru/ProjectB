@@ -7,7 +7,8 @@ namespace ProjectB.Vehicles
 {
     public class VehicleMountedWeapons : MonoBehaviour
     {
-        public MountedWeaponSpot[] Spots;
+        public int SpotCount { get { return Spots?.Length ?? 0; } }
+        public MountedWeaponSpot[] Spots { get; private set; }
 
         private void Awake()
         {
