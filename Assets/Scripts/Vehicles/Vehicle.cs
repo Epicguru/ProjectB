@@ -1,6 +1,7 @@
 ﻿using JNetworking;
 using ProjectB.Commands;
 using ProjectB.Units;
+using ProjectB.Units.Actions;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -90,7 +91,9 @@ namespace ProjectB.Vehicles
         private void Awake()
         {
             NetPosSync.SyncRotation = true;
-            AllVehicles.Add(this);            
+            AllVehicles.Add(this);
+
+            Unit.AddAction<ExplodeAction>();
         }       
 
         private void GL_DrawUnitSelected(Color color)
@@ -111,17 +114,20 @@ namespace ProjectB.Vehicles
             }
         }
 
-        [Command("Mounts a weapon on to a named ship.")]
-        public static string MountWeapon(string vehicleName, int slot, string weaponName, bool forAll)
+        [Command("Mounts a weapon on the selected ship(s).")]
+        public static string MountWeapon(int slot, string weaponName, bool forAll)
         {
             if (string.IsNullOrWhiteSpace(weaponName))
                 weaponName = null;
 
             int count = 0;
-            foreach (var veh in AllVehicles)
+
+            var selected = Unit.GetAllSelected();
+            foreach (var unit in selected)
             {
-                if (veh.gameObject.name.ToLower().Contains(vehicleName.ToLower()))
+                if (unit.IsVehicle)
                 {
+                    var veh = unit.Vehicle;
                     veh.MountedWeapons.SetWeapon(slot, weaponName);
 
                     if (!forAll)
@@ -132,8 +138,8 @@ namespace ProjectB.Vehicles
                     {
                         count++;
                     }
-                }
-            }
+                }                
+            }           
 
             return $"Placed weapon on {count} vehicles.";
         }

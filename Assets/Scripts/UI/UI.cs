@@ -8,7 +8,7 @@ namespace ProjectB.Interface
     public class UI : MonoBehaviour
     {
         [GameVar(Name = "UI_Scale")]
-        public static float GlobalScale = 1f;
+        public static float GlobalScale = 1.4f;
 
         [GameVar(Name = "UI_DrawerCount")]
         public static int UIDrawerCount { get { return drawers.Count; } }

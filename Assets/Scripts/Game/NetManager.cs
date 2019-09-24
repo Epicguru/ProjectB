@@ -2,8 +2,10 @@
 using ProjectB.Ballistics;
 using ProjectB.Commands;
 using ProjectB.Interface;
+using ProjectB.Units.Actions;
 using System;
 using System.IO;
+using System.Reflection;
 using UnityEngine;
 
 namespace ProjectB
@@ -16,7 +18,11 @@ namespace ProjectB
         private void Start()
         {
             JNet.Init("Project B");
+
+            // TODO move to somewhere more sensible, such as 'game manager'
             Spawnables.NetRegisterAll();
+            ActionLoader.LoadAndRegisterLocal();
+
             UI.AddDrawer(DrawUI);
         }
 

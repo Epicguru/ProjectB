@@ -49,11 +49,14 @@ namespace ProjectB.Interface
                 UI.Label($"Selected: {unit.Name}");
                 UI.Label("Available actions:");
 
-                scrollPos = GUILayout.BeginScrollView(scrollPos, GUILayout.MaxHeight(200));
+                scrollPos = GUILayout.BeginScrollView(scrollPos);
 
                 foreach (var action in unit.GetAllRunnableActions())
                 {
-                    UI.Label(action.Name);
+                    if(UI.Button(action.Name))
+                    {
+                        unit.RunAction(action.ID);
+                    }                    
                 }
 
                 GUILayout.EndScrollView();
@@ -72,7 +75,7 @@ namespace ProjectB.Interface
             if (unit.IsVehicle)
             {
                 var vehicle = unit.Vehicle;
-                UI.Label($"Speed: {vehicle.Body.velocity.magnitude * 0.1f * 3.6f:F1} kph.");
+                UI.Label($"Speed: {vehicle.Body.velocity.magnitude * Utils.UNITS_TO_METERS * 3.6f:F1} kph.");
                 UI.Label($"Weapon spots: {vehicle.MountedWeapons.SpotCount}");
                 string target = "None";
                 if (vehicle.Nav.Targets != null && vehicle.Nav.Targets.Count > 0)

@@ -1859,9 +1859,6 @@ GameObject:
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
   - component: {fileID: 519420030}
-  - component: {fileID: 519420034}
-  - component: {fileID: 519420033}
-  - component: {fileID: 519420039}
   - component: {fileID: 519420035}
   - component: {fileID: 519420037}
   - component: {fileID: 519420036}
@@ -1954,40 +1951,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &519420033
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 519420028}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f80a1b873a3a8b24095968ae5b1ca4f7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Name: Body Drag
-  IsEnabled: 0
-  WindowRect:
-    serializedVersion: 2
-    x: 0
-    y: 0
-    width: 0
-    height: 0
-  ForceScalar: 1000
---- !u!114 &519420034
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 519420028}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4ec4b6a566d59b340a05c280c6c73be7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  SelectedRigidbody: {fileID: 0}
 --- !u!114 &519420035
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2094,29 +2057,6 @@ MonoBehaviour:
   m_AfterStackBundles:
   - assemblyQualifiedName: ProjectB.Effects.PostProcessing.ScreenWarp, Assembly-CSharp,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
---- !u!114 &519420039
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 519420028}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d8019c2eaf283ac48a77637e82d1598f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Name: Projectile Spawner
-  IsEnabled: 0
-  WindowRect:
-    serializedVersion: 2
-    x: 0
-    y: 0
-    width: 0
-    height: 0
-  Projectile: {fileID: 5031809783676560273, guid: ce4d058e82a869f4d9391710c65cbd38,
-    type: 3}
-  Speed: 10
 --- !u!114 &519420040
 MonoBehaviour:
   m_ObjectHideFlags: 0

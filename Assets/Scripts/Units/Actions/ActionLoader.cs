@@ -1,7 +1,9 @@
 ﻿
 using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using UnityEngine;
 
 namespace ProjectB.Units.Actions
 {
@@ -67,5 +69,51 @@ namespace ProjectB.Units.Actions
 
             return actions;
         }
+
+        public static UnitAction[] LoadInstances(Assembly a)
+        {
+            var s = new System.Diagnostics.Stopwatch();
+            s.Start();
+
+            Debug.Log($"Loading UnitActions from file, searching assembly {a.FullName}.");
+            TextAsset text = Resources.Load<TextAsset>("UnitActions");
+            string[] names = text.text.Trim().Split('\n');
+            var loaded = MakeInstances(GetAllActionClasses(names, a));
+
+            s.Stop();
+            Debug.Log($"Done, loaded {loaded.Length} actions. Took {s.Elapsed.TotalMilliseconds:F1}ms.");
+
+            return loaded;
+        }
+
+        public static void LoadAndRegisterLocal()
+        {
+            var actions = LoadInstances(Assembly.GetCallingAssembly());
+            foreach (var action in actions)
+            {
+                UnitAction.RegisterNew(action);
+            }
+        }
+
+#if UNITY_EDITOR
+
+        [UnityEditor.MenuItem("Bake/Bake Unit Actions")]
+        public static void BakePaths()
+        {
+            Assembly a = Assembly.GetCallingAssembly();
+            Debug.Log($"Finding all unit actions in {a.FullName}...");
+            string[] paths = GetTypeNames(GetAllAssemblyActions(a));
+
+            foreach (var path in paths)
+            {
+                Debug.Log(" -" + path);
+            }
+
+            string saveFile = System.IO.Path.Combine(Application.dataPath, "Resources", "UnitActions.txt");
+            File.WriteAllLines(saveFile, paths);
+            Debug.Log($"Done, saved {paths.Length}.");
+        }
+
+#endif
     }
 }

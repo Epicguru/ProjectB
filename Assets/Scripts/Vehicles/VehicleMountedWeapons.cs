@@ -66,7 +66,7 @@ namespace ProjectB.Vehicles
             }
             else
             {
-                Debug.LogError($"Failed to spawn mounted weapoon from name {mountedWeaponName}.");
+                Debug.LogError($"Failed to spawn mounted weapon from name {mountedWeaponName}.");
             }
         }
 

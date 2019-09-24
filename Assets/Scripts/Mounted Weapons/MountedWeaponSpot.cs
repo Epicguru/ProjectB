@@ -56,12 +56,7 @@ namespace ProjectB.Vehicles.Weapons
             {
                 Debug.LogError("Cannot set mounted weapon when not on server.");
                 return;
-            }
-            if (this.Size != instance.Size)
-            {
-                Debug.LogError($"Size is not correct. Expected {this.Size}, got {instance.Size}... Weapon will not be placed.");
-                return;
-            }
+            }            
 
             if (instance == null)
             {
@@ -73,6 +68,12 @@ namespace ProjectB.Vehicles.Weapons
             }
             else
             {
+                if (this.Size != instance.Size)
+                {
+                    Debug.LogError($"Size is not correct. Expected {this.Size}, got {instance.Size}... Weapon will not be placed.");
+                    return;
+                }
+
                 SetMountedWeapon(null);
                 instance.GetComponent<NetPosSync>().SetParent(this);
                 instance.transform.localPosition = Vector3.zero;

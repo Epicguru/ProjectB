@@ -1,6 +1,8 @@
 ﻿
+using ProjectB.Commands;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 namespace ProjectB.Units.Actions
@@ -16,7 +18,7 @@ namespace ProjectB.Units.Actions
         /// Registers a unit action for use by all applicable units.
         /// </summary>
         /// <param name="action">The action instance. Should be null.</param>
-        public static void RegisterAction(UnitAction action)
+        public static void RegisterNew(UnitAction action)
         {
             if (action == null)
             {
@@ -87,11 +89,17 @@ namespace ProjectB.Units.Actions
 
         /// <summary>
         /// The number of arguments that the <see cref="CanRunOn(Unit, object[], out string)"/> and <see cref="Run(Unit, object[])"/> methods expect.
+        /// Default is zero.
         /// </summary>
         public virtual int ExpectedArgumentCount
         {
             get; protected set;
         } = 0;
+
+        public UnitAction(string name)
+        {
+            this.Name = name;
+        }
 
         /// <summary>
         /// Returns true if the unit passed into the method can currently have this action run on it.
@@ -165,5 +173,18 @@ namespace ProjectB.Units.Actions
         /// <param name="args">The arguments passed into this action. The array may be empty, but will normally never be null.</param>
         /// <returns>An optional string detailing how the action completed. Returning null is perfectly valid, and the action is assumed to have completed successfully.</returns>
         protected abstract string Run(Unit unit, object[] args);
+
+        [Command("Lists all registered Unit Actions.", Name = "ListUnitActions")]
+        private static string ListActions()
+        {
+            StringBuilder str = new StringBuilder();
+            for (int i = 0; i < allActions.Count; i++)
+            {
+                var action = allActions[i];
+                str.Append("ID ").Append(i + 1).Append(": ").AppendLine(action.Name);
+            }
+
+            return str.ToString();
+        }
     }
 }
