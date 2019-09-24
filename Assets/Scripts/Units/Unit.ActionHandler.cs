@@ -6,33 +6,35 @@ namespace ProjectB.Units
 {
     public partial class Unit
     {
-        private HashSet<ushort> supportedActions = new HashSet<ushort>();
+        private HashSet<ushort> bannedActions = new HashSet<ushort>();
 
         /// <summary>
-        /// Adds the action to the list of supported actions for this unit.
+        /// Adds the action to the list of banned actions for this unit.
+        /// Banned actions will not be allowed to run by default on this unit.
         /// </summary>
         /// <param name="id">The ID of the action. 0 is invalid.</param>
-        public void AddAction(ushort id)
+        public void BanAction(ushort id)
         {
-            if (supportedActions.Contains(id))
+            if (bannedActions.Contains(id))
                 return;
 
             var action = UnitAction.Get(id);
             if (action == null)
                 return;
 
-            supportedActions.Add(id);
+            bannedActions.Add(id);
         }
 
         /// <summary>
-        /// Adds the action to the list of supported actions for this unit.
+        /// Adds the action to the list of banned actions for this unit.
+        /// Banned actions will not be allowed to run by default on this unit.
         /// </summary>
         /// <typeparam name="T">The type of the action. Must inherit from UnitAction.</typeparam>
-        public void AddAction<T>() where T : UnitAction
+        public void Banaction<T>() where T : UnitAction
         {
             var action = UnitAction.Get<T>();
             if (action != null)
-                this.AddAction(action.ID);
+                this.bannedActions.Add(action.ID);
         }
 
         /// <summary>
@@ -41,17 +43,17 @@ namespace ProjectB.Units
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public bool IsActionSupported(ushort id)
+        public bool IsActionBanned(ushort id)
         {
-            return supportedActions.Contains(id);
+            return bannedActions.Contains(id);
         }
 
         public bool CanRunAction(ushort id, out string invalidString, params object[] args)
         {
             // Check if it is actually supported by this unit.
-            if (!IsActionSupported(id))
+            if (IsActionBanned(id))
             {
-                invalidString = "That action is not supported by this unit.";
+                invalidString = "That action is banned on this unit.";
                 return false;
             }
 
@@ -111,9 +113,9 @@ namespace ProjectB.Units
 
         public IEnumerable<UnitAction> GetAllRunnableActions(params object[] args)
         {
-            foreach (var id in supportedActions)
+            for (int i = 0; i <= UnitAction.RegisteredCount; i++)
             {
-                var action = UnitAction.Get(id);
+                var action = UnitAction.Get((ushort)i);
                 if(action != null)
                 {
                     if(action.CanRunOn(this, args, out string s))

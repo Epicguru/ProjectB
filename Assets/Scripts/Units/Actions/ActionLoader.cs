@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using UnityEngine;
 
 namespace ProjectB.Units.Actions
@@ -29,7 +30,7 @@ namespace ProjectB.Units.Actions
             {
                 Type t = types[i];
 
-                strings[i] = t.FullName;
+                strings[i] = t.FullName.Trim();
             }
 
             return strings;
@@ -40,8 +41,8 @@ namespace ProjectB.Units.Actions
             Type[] array = new Type[names.Length];
             for (int i = 0; i < names.Length; i++)
             {
-                string name = names[i];
-                Type t = a.GetType(name, false, true);
+                string name = names[i].Trim();
+                Type t = a.GetType(name, false, true);                
 
                 array[i] = t;
             }
@@ -77,8 +78,16 @@ namespace ProjectB.Units.Actions
 
             Debug.Log($"Loading UnitActions from file, searching assembly {a.FullName}.");
             TextAsset text = Resources.Load<TextAsset>("UnitActions");
-            string[] names = text.text.Trim().Split('\n');
+            string[] names = text.text.Trim().Split('#');
             var loaded = MakeInstances(GetAllActionClasses(names, a));
+
+            for (int i = 0; i < loaded.Length; i++)
+            {
+                if(loaded[i] == null)
+                {
+                    Debug.LogError($"Failed to load UnitAction for class name {names[i]}.");
+                }
+            }
 
             s.Stop();
             Debug.Log($"Done, loaded {loaded.Length} actions. Took {s.Elapsed.TotalMilliseconds:F1}ms.");
@@ -104,13 +113,17 @@ namespace ProjectB.Units.Actions
             Debug.Log($"Finding all unit actions in {a.FullName}...");
             string[] paths = GetTypeNames(GetAllAssemblyActions(a));
 
-            foreach (var path in paths)
+            StringBuilder str = new StringBuilder();
+            for (int i = 0; i < paths.Length; i++)
             {
-                Debug.Log(" -" + path);
+                string path = paths[i];
+                str.Append(path);
+                if(i != paths.Length - 1)
+                    str.Append('#');
             }
 
             string saveFile = System.IO.Path.Combine(Application.dataPath, "Resources", "UnitActions.txt");
-            File.WriteAllLines(saveFile, paths);
+            File.WriteAllText(saveFile, str.ToString());
             Debug.Log($"Done, saved {paths.Length}.");
         }
 

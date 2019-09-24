@@ -14,7 +14,7 @@ namespace ProjectB.Interface
         public static int UIDrawerCount { get { return drawers.Count; } }
 
         [GameVar(Name = "UI_UseCustomSkin")]
-        public static bool UseCustomSkin { get; set; } = false;
+        public static bool UseCustomSkin { get; set; } = true;
 
         public GUISkin CustomSkin;
 
@@ -81,6 +81,23 @@ namespace ProjectB.Interface
             ApplyScaling();
             CleanDrawers();
             DrawDrawers();
+            DrawTestUI();
+        }
+
+        private bool toggleTest;
+        private float sliderTest;
+        private void DrawTestUI()
+        {
+            GUI.Box(new Rect(90, 70, ScreenWidth - 180, ScreenHeight - 140), "Box title");
+            GUILayout.BeginArea(new Rect(100, 100, ScreenWidth - 200, ScreenHeight - 200));
+            GUILayout.Box("I am a box!");
+            GUILayout.Button("Button here!");
+            GUILayout.BeginHorizontal();
+            GUILayout.Button("Button with slider");
+            sliderTest = GUILayout.HorizontalSlider(sliderTest, 0f, 100f);
+            GUILayout.EndHorizontal();
+            toggleTest = GUILayout.Toggle(toggleTest, "Toggle test");
+            GUILayout.EndArea();
         }
 
         #region GUI wrapper

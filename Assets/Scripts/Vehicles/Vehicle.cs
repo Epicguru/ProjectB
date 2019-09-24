@@ -92,8 +92,6 @@ namespace ProjectB.Vehicles
         {
             NetPosSync.SyncRotation = true;
             AllVehicles.Add(this);
-
-            Unit.AddAction<ExplodeAction>();
         }       
 
         private void GL_DrawUnitSelected(Color color)

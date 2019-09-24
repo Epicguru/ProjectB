@@ -10,6 +10,7 @@ namespace ProjectB.Units.Actions
     public abstract class UnitAction
     {
         public static readonly object[] EmptyArgs = new object[0];
+        public static int RegisteredCount { get { return allActions.Count; } }
         private static readonly Dictionary<Type, UnitAction> actionMap = new Dictionary<Type, UnitAction>();
         private static readonly List<UnitAction> allActions = new List<UnitAction>();
         private static ushort highestID = 1;
@@ -131,9 +132,9 @@ namespace ProjectB.Units.Actions
                 return false;
             }
 
-            if (!unit.IsActionSupported(this.ID))
+            if (unit.IsActionBanned(this.ID))
             {
-                reasonInvalid = $"The unit does not support this action. See Unit.AddAction().";
+                reasonInvalid = $"The unit does not allow this action (banned). See Unit.BanAction().";
                 return false;
             }
 

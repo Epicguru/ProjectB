@@ -43,6 +43,19 @@ namespace ProjectB.Vehicles
             }
         }
 
+        public MountedWeapon GetWeapon(int spotIndex)
+        {
+            if (spotIndex >= 0 && spotIndex < Spots.Length)
+            {
+                return Spots[spotIndex].CurrentWeapon;
+            }
+            else
+            {
+                Debug.LogError($"Spot index {spotIndex} is out of bounds! Min {0}, max {Spots.Length}.");
+                return null;
+            }
+        }
+
         /// <summary>
         /// Sets the mounted weapon to the mounted weapon with the specified prefab name. Only works when called from the server.
         /// If the weapon is null, the current weapon is removed instantly.

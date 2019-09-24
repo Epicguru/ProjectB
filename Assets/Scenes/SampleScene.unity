@@ -1977,7 +1977,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9dd7695d43fb8642b54b8f404dea2ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SizeRange: {x: 1.5, y: 35}
+  SizeRange: {x: 1.5, y: 55}
   SizeSensitivity: 0.25
   TargetSize: 25
   SizeLerp: 5
@@ -25718,7 +25718,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Width: 200
-  Height: 150
+  Height: 230
 --- !u!1 &2050691585
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,1 +1,1 @@
-ProjectB.Units.Actions.ExplodeAction
+ProjectB.Units.Actions.ExplodeAction#ProjectB.Units.Actions.OpenFireAction
