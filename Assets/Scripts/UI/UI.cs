@@ -8,10 +8,13 @@ namespace ProjectB.Interface
     public class UI : MonoBehaviour
     {
         [GameVar(Name = "UI_Scale")]
-        public static float GlobalScale = 1.4f;
+        public static float GlobalScale = 1.2f;
 
         [GameVar(Name = "UI_DrawerCount")]
         public static int UIDrawerCount { get { return drawers.Count; } }
+
+        [GameVar]
+        public static bool EnableTestUI = false;
 
         [GameVar(Name = "UI_UseCustomSkin")]
         public static bool UseCustomSkin { get; set; } = true;
@@ -81,7 +84,9 @@ namespace ProjectB.Interface
             ApplyScaling();
             CleanDrawers();
             DrawDrawers();
-            DrawTestUI();
+
+            if(EnableTestUI)
+                DrawTestUI();
         }
 
         private bool toggleTest;

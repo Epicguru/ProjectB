@@ -1,5 +1,6 @@
 ﻿
 using ProjectB.Units;
+using ProjectB.Units.Actions;
 using ProjectB.Vehicles;
 using System.Collections.Generic;
 using UnityEngine;
@@ -51,12 +52,14 @@ namespace ProjectB.Interface
 
                 scrollPos = GUILayout.BeginScrollView(scrollPos);
 
+                int index = 0;
                 foreach (var action in unit.GetAllRunnableActions())
-                {
-                    if(UI.Button(action.Name))
+                {                    
+                    if(UI.Button($"{action.Name} [{ActionKeys.Get(index)}]") || Input.GetKeyDown(ActionKeys.Get(index)))
                     {
                         unit.RunAction(action.ID);
-                    }                    
+                    }
+                    index++;
                 }
 
                 GUILayout.EndScrollView();
