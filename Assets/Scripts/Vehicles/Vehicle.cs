@@ -85,6 +85,17 @@ namespace ProjectB.Vehicles
                 return Movement.Body;
             }
         }
+        public Ship Ship
+        {
+            get
+            {
+                if (_ship == null)
+                    _ship = GetComponent<Ship>();
+                return _ship;
+            }
+        }
+        private Ship _ship;
+        public bool IsShip { get { return Ship != null; } }
 
         public string Name { get { return Unit.Name; } }
 

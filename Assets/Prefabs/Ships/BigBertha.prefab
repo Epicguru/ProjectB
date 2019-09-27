@@ -1790,7 +1790,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28ad9498e9aaaf44c8e43c33feda0752, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Spots: []
 --- !u!114 &853404952110498705
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1803,6 +1802,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: edd6e1b6063f22d42b04fa759ac485d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Size: 3
+  InDock: 0
+  DockSlot: -1
+  CurrentDock: {fileID: 0}
 --- !u!114 &853404952110498709
 MonoBehaviour:
   m_ObjectHideFlags: 0

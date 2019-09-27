@@ -1,6 +1,7 @@
 ﻿
 using ProjectB.Commands;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
@@ -13,6 +14,7 @@ namespace ProjectB.Units.Actions
         public static int RegisteredCount { get { return allActions.Count; } }
         private static readonly Dictionary<Type, UnitAction> actionMap = new Dictionary<Type, UnitAction>();
         private static readonly List<UnitAction> allActions = new List<UnitAction>();
+        private static List<UnitAction> tempActions = new List<UnitAction>();
         private static ushort highestID = 1;
 
         /// <summary>
@@ -72,6 +74,36 @@ namespace ProjectB.Units.Actions
                 Debug.LogError($"Could not find action for type {type.FullName}.");
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Takes in a list (enumerable) of units and returns an array of actions that can be exectuted
+        /// on one or more of the units. Not all actions returned are guaranteed to run on all units,
+        /// but at least on one.
+        /// 
+        /// The enumerable that is returned is temporary and should be immediately read and discarded by the caller.
+        /// For longer term storage, copy the results into your own array.
+        /// </summary>
+        /// <param name="units">The array or similar or units.</param>
+        /// <returns>An enumerator for all the actions. You should use ToArray()</returns>
+        public static IEnumerable<UnitAction> CompileRunnableActionList(IEnumerable<Unit> units)
+        {
+            tempActions.Clear();
+            foreach (var unit in units)
+            {
+                if(unit != null)
+                {
+                    foreach (var action in unit.GetAllRunnableActions())
+                    {
+                        if (!tempActions.Contains(action))
+                        {
+                            tempActions.Add(action);
+                        }
+                    }
+                }
+            }
+
+            return tempActions;
         }
 
         /// <summary>

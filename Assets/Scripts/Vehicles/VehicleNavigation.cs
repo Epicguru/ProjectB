@@ -30,8 +30,11 @@ namespace ProjectB.Vehicles
         }
         private VehicleMovement _movement;
 
-        [System.NonSerialized]
-        public List<PNode> Targets = new List<PNode>();
+        public bool HasPath { get { return Path.Count > 0; } }
+        public Vector2 CurrentTargetPos { get { return HasPath ? Path[Path.Count - 1].Position : Vector2.zero; } }
+        public float CurrentTargetAngle { get { return HasPath ? Path[Path.Count - 1].TargetAngle : 0f; } }
+        protected readonly List<TargetPoint> Path = new List<TargetPoint>();
+        private static List<PNode> Nodes = new List<PNode>();
 
         public float PointReachedDistance = 2f;
 
@@ -43,99 +46,148 @@ namespace ProjectB.Vehicles
         public float TorqueForce = 100f;
         public float TorqueAngleMax = 90f;
 
-        private bool reachedEnd = true;
-        private Vector2 finalTarget;
-        private float finalAngle;
+        private UponPathCompleted uponComplete;
+        public delegate void UponPathCompleted(Vehicle v, bool completed);
 
         private void Update()
         {
             if (Input.GetMouseButtonDown(1) && Vehicle.Unit.IsSelected && !InputManager.IsMouseInUI)
             {
-                finalTarget = InputManager.MousePos;
-                var start = Navigation.GetClosestTile(transform.position);
-                var end = Navigation.GetClosestTile(finalTarget);
-                var result = new Pathfinding().Run(start.x, start.y, end.x, end.y, Navigation.Instance, Targets);
-                if (result != PathfindingResult.SUCCESSFUL)
-                {
-                    Debug.LogWarning($"Pathfinding result: {result}");
-                    reachedEnd = true;
-                }
-                else
-                {
-                    reachedEnd = false;
-                }
+                MakePathToPos(InputManager.MousePos, 0f, null, true);                
             }
 
-            if (Targets == null || (Targets.Count == 0 && reachedEnd))
+            if (!HasPath)
             {
-                float deltaAngle = Mathf.DeltaAngle(transform.localEulerAngles.z, finalAngle);
-                float scale = Mathf.Abs(deltaAngle) / TorqueAngleMax;
-                float torque = TorqueForce * scale * (deltaAngle > 0f ? 1f : -1f) * 1f;
-
                 Movement.ForwardsThrust = 0f;
-                Movement.Torque = torque;
+                Movement.Torque = 0f;
             }
             else
             {
-                Vector2 point = Targets.Count != 0 ? Navigation.GetWorldPos(Targets[0]) : finalTarget;
-                if (point.DistanceCheck(transform.position, Targets.Count != 0 ? PointReachedDistance : 0.2f))
+                TargetPoint point = Path[0];
+                if (point.Position.DistanceCheck(transform.position, point.MinDistance))
                 {
-                    if (Targets.Count > 1)
+                    if(Path.Count != 1)
                     {
-                        point = Navigation.GetWorldPos(Targets[1]);
-                        Targets.RemoveAt(0);
+                        Path.RemoveAt(0);
                     }
                     else
                     {
-                        if (Targets.Count == 0)
+                        float delta = Mathf.Abs(Mathf.DeltaAngle(transform.eulerAngles.z, point.TargetAngle));
+                        if (delta <= 10f)
                         {
-                            reachedEnd = true;
-                        }
-                        else
-                        {
-                            Targets.Clear();
+                            // Path complete!
+                            uponComplete?.Invoke(this.Vehicle, true);
+                            uponComplete = null;
+                            Path.RemoveAt(0);
+                            return;
                         }
                     }
                 }
                 Vector2 currentPos = transform.position;
-                float currentAngle = transform.localEulerAngles.z;
-                float dst = currentPos.DistanceTo(point);
+                float currentAngle = transform.eulerAngles.z;
+                float dst = currentPos.DistanceTo(point.Position);
 
-                float angle = currentPos.AngleTowards(point);
+                float finalCurveP = Mathf.Clamp01(dst / (ThrustDecreaseDistance * 0.5f));
+                float finalAngle = Mathf.LerpAngle(point.TargetAngle, currentPos.AngleTowards(point.Position), finalCurveP); 
+
+                float angle = Path.Count == 1 ? finalAngle : currentPos.AngleTowards(point.Position);
                 float deltaAngle = Mathf.DeltaAngle(currentAngle, angle);
                 float scale = Mathf.Abs(deltaAngle) / TorqueAngleMax;
 
                 float torque = TorqueForce * scale * (deltaAngle > 0f ? 1f : -1f);
-                float thrust = ThrustForce * Mathf.Clamp01(dst / (Targets.Count != 0 ? ThrustDecreaseDistance : 7f));
+                float thrust = ThrustForce * Mathf.Clamp01(dst / ThrustDecreaseDistance);
+
+                if(Path.Count == 1 && Movement.Body.velocity.sqrMagnitude > 1f)
+                {
+                    thrust *= -1f;
+                }
 
                 Movement.ForwardsThrust = thrust;
                 Movement.Torque = torque;
             }
         }
 
+        public PathfindingResult MakePathToPos(Vector2 worldPos, float angle, UponPathCompleted uponComplete, bool autoAngle = false)
+        {
+            Path.Clear();
+
+            var start = Navigation.GetClosestTile(transform.position);
+            var end = Navigation.GetClosestTile(worldPos);
+            var result = new Pathfinding().Run(start.x, start.y, end.x, end.y, Navigation.Instance, Nodes);
+
+            if(result == PathfindingResult.SUCCESSFUL)
+            {
+                foreach (var node in Nodes)
+                {
+                    Vector2 pos = Navigation.GetWorldPos(node);
+
+                    Path.Add(new TargetPoint(pos, PointReachedDistance));
+                }
+                this.uponComplete = uponComplete;
+
+                // If auto angle, make the angle be the same angle as when travelling between the second-
+                // to-last point and the last point.
+                if (autoAngle)
+                {
+                    angle = (Path[Path.Count - 1].Position - Path[Path.Count - 2].Position).ToAngle();
+                }
+
+                Path.Add(new TargetPoint(worldPos, 1f, angle));
+            }
+            else
+            {
+                uponComplete?.Invoke(Vehicle, false);
+            }
+
+            return result;
+        }
+
+        public void ClearPath()
+        {
+            Path.Clear();
+            uponComplete?.Invoke(Vehicle, false);
+            uponComplete = null;
+        }
+
         private void OnDrawGizmosSelected()
         {
-            if (Targets == null)
+            if (Path == null)
                 return;
 
             bool first = true;
-            foreach (var point in Targets)
+            foreach (var point in Path)
             {
                 Gizmos.color = Color.black;
-                Gizmos.DrawCube(Navigation.GetWorldPos(point), Vector3.one * 0.5f);
+                Gizmos.DrawCube(point.Position, Vector3.one * 0.5f);
                 if (first)
                 {
                     first = false;
                     Gizmos.color = Color.blue;
-                    Gizmos.DrawWireSphere(Navigation.GetWorldPos(point), ThrustDecreaseDistance);
+                    Gizmos.DrawWireSphere(point.Position, ThrustDecreaseDistance);
                     Gizmos.color = Color.magenta;
-                    Gizmos.DrawWireSphere(Navigation.GetWorldPos(point), PointReachedDistance);
+                    Gizmos.DrawWireSphere(point.Position, PointReachedDistance);
                 }
             }
-            if (!reachedEnd)
+            if (HasPath)
             {
                 Gizmos.color = Color.cyan;
-                Gizmos.DrawCube(finalTarget, Vector3.one * 0.5f);
+                Gizmos.DrawCube(CurrentTargetPos, Vector3.one * 0.5f);
+                Gizmos.DrawLine(CurrentTargetPos, CurrentTargetPos + CurrentTargetAngle.ToDirection() * 2f);
+            }
+        }
+
+        [System.Serializable]
+        public struct TargetPoint
+        {
+            public Vector2 Position;
+            public float MinDistance;
+            public float TargetAngle;
+
+            public TargetPoint(Vector2 pos, float minDistance, float targetAngle = 0f)
+            {
+                this.Position = pos;
+                this.MinDistance = minDistance;
+                this.TargetAngle = targetAngle;
             }
         }
     }

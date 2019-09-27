@@ -39,7 +39,7 @@ namespace ProjectB
         }
 
         /// <summary>
-        /// Gets the linear distance between this vector and the target vector.
+        /// Gets the linear distance between this vector and the target vector, considering both vectors as points.
         /// </summary>
         public static float DistanceTo(this Vector2 vector, Vector2 target)
         {

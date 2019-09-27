@@ -43,18 +43,20 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: 47dbae3a0c19f5346b41741b55cffb56, type: 3}
-    totalSpriteSurfaceArea: 690678
+    totalSpriteSurfaceArea: 707062
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
   - {fileID: 21300000, guid: 7d0bade52cf074146a87aa4f434f87b3, type: 3}
   - {fileID: 21300000, guid: 75ecfde5ff4ec1c41971783c47590335, type: 3}
+  - {fileID: 21300000, guid: 2d960a57389b22b46a45869d21c5c795, type: 3}
   - {fileID: 21300000, guid: 80d3d7f9fdfc2584799bdd7fd0b5d469, type: 3}
   - {fileID: 21300000, guid: 18bd27ca0e60ab040adec92108a7d6aa, type: 3}
   - {fileID: 21300000, guid: 81ed64bf47331ae4989e534e1542c2ce, type: 3}
   m_PackedSpriteNamesToIndex:
   - Lines
   - Walls
+  - MoneyMaker
   - Roof Colour
   - Window
   - Stair Colour

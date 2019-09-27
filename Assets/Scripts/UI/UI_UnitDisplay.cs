@@ -50,7 +50,7 @@ namespace ProjectB.Interface
                 UI.Label($"Selected: {unit.Name}");
                 UI.Label("Available actions:");
 
-                scrollPos = GUILayout.BeginScrollView(scrollPos);
+                scrollPos = GUILayout.BeginScrollView(scrollPos, GUILayout.MaxHeight(300));
 
                 int index = 0;
                 foreach (var action in unit.GetAllRunnableActions())
@@ -69,6 +69,27 @@ namespace ProjectB.Interface
             else
             {
                 // Multiple selected.
+                UI.Label($"Selected {units.Count} units.");
+                UI.Label("Available actions:");
+
+                scrollPos = GUILayout.BeginScrollView(scrollPos);
+
+                var actions = UnitAction.CompileRunnableActionList(units);
+                int index = 0;
+                foreach (var action in actions)
+                {
+                    if (UI.Button($"{action.Name} [{ActionKeys.Get(index)}]") || Input.GetKeyDown(ActionKeys.Get(index)))
+                    {
+                        foreach (var unit in units)
+                        {
+                            // Try to run the action on all units.
+                            unit.RunAction(action.ID);
+                        }
+                    }
+                    index++;
+                }
+
+                GUILayout.EndScrollView();
             }
         }
         private Vector2 scrollPos;
@@ -81,8 +102,8 @@ namespace ProjectB.Interface
                 UI.Label($"Speed: {vehicle.Body.velocity.magnitude * Utils.UNITS_TO_METERS * 3.6f:F1} kph.");
                 UI.Label($"Weapon spots: {vehicle.MountedWeapons.SpotCount}");
                 string target = "None";
-                if (vehicle.Nav.Targets != null && vehicle.Nav.Targets.Count > 0)
-                    target = vehicle.Nav.Targets[vehicle.Nav.Targets.Count - 1].ToString();
+                if (vehicle.Nav.HasPath)
+                    target = vehicle.Nav.CurrentTargetPos.ToString();
                 UI.Label($"Moving to: {target}");
             }
         }
