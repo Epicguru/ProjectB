@@ -13,6 +13,7 @@ namespace ProjectB
     [DefaultExecutionOrder(-500)]
     public class NetManager : NetBehaviour
     {
+        public Player Prefab;
         private bool record = false;
 
         private void Start()
@@ -76,6 +77,29 @@ namespace ProjectB
         private void StartServer()
         {
             JNet.StartServer("My Server Name", 7777, 4);
+            JNet.GetServer().UponConnection = (client) =>
+            {
+                // Create a player object.
+                string playerName = $"Player #{Player.AllPlayers.Count}";
+                Player player = Instantiate(Prefab);
+                player.gameObject.name = playerName;
+                player.Name = playerName;
+                player.Money = 1000;
+
+                // Assign the player object reference to the remote data.
+                client.Data = player;
+
+                JNet.Spawn(player); // TODO - Should I spawn it owned by the client?
+            };
+            JNet.GetServer().UponDisconnection = (client, reason) =>
+            {
+                // Remove the player object from existence.
+                Player player = client.GetData<Player>();
+                if(player != null)
+                {
+                    Destroy(player.gameObject);
+                }
+            };
         }
 
         private void DrawUI()

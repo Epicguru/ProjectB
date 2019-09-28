@@ -64,15 +64,14 @@ namespace JNetworking
                 OwnedObjectsList.Remove(o);
         }
 
-        public T GetData<T>()
+        public T GetData<T>() where T : class
         {
             if (Data == null)
                 return default;
 
             try
             {
-                T cast = (T)(Data);
-                return cast;
+                return Data as T;
             }
             catch
             {

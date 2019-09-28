@@ -134,6 +134,12 @@ namespace ProjectB.Vehicles
 
                 Path.Add(new TargetPoint(worldPos, 1f, angle));
             }
+            else if(result == PathfindingResult.ERROR_START_IS_END)
+            {
+                // When the end position is in the same navigation tile, just move straight to the target.
+                Path.Add(new TargetPoint(worldPos, 1f, autoAngle ? 90f : angle));
+                return PathfindingResult.SUCCESSFUL;
+            }
             else
             {
                 uponComplete?.Invoke(Vehicle, false);

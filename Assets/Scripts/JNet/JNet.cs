@@ -916,6 +916,18 @@ namespace JNetworking
         /// Note that this does NOT instantiate the object on the server. The object should already be instantiated,
         /// and this method just registers it. In other words, do not pass a prefab to this method.
         /// </summary>
+        /// <param name="obj">A behaviour on the net object to spawn.</param>
+        public static void Spawn(NetBehaviour behaviour, NetConnection owner = null)
+        {
+            JNet.Spawn(behaviour.NetObject, owner);
+        }
+
+        /// <summary>
+        /// Makes a spawned object be registered to the networking system, causing it to be 
+        /// instantiated on all connected clients.
+        /// Note that this does NOT instantiate the object on the server. The object should already be instantiated,
+        /// and this method just registers it. In other words, do not pass a prefab to this method.
+        /// </summary>
         /// <param name="obj">The object to spawn. Must have a NetObject component attached to it.</param>
         public static void Spawn(GameObject go, NetConnection owner = null)
         {

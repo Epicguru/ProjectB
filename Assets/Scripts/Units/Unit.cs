@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace ProjectB.Units
 {
+    [RequireComponent(typeof(Health))]
     public partial class Unit : MonoBehaviour
     {
         public static readonly List<Unit> AllActiveUnits = new List<Unit>();
@@ -50,7 +51,18 @@ namespace ProjectB.Units
         public bool IsSelected;
 
         public bool IsVehicle { get { return Vehicle != null; } }
+        public bool IsDead { get { return Health; } }
 
+        public Health Health
+        {
+            get
+            {
+                if (_health == null)
+                    _health = GetComponent<Health>();
+                return _health;
+            }
+        }
+        private Health _health;
         public Vehicle Vehicle
         {
             get

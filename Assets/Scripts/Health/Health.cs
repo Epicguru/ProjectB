@@ -11,6 +11,7 @@ namespace ProjectB
         private Dictionary<Collider2D, HealthPart> c2h;
         private Dictionary<HealthPartID, HealthPart[]> id2h;
 
+        public bool IsDead { get; private set; }
         public bool ExplodeUponDeath = true;
 
         private void Awake()
@@ -143,11 +144,16 @@ namespace ProjectB
                 {
                     Debug.Log($"Damn we dead. Died because {part.Name} was destroyed.");
 
-                    var spawned = PoolObject.Spawn(Spawnables.Get<PoolObject>("ExplosionEffect"));
-                    spawned.transform.position = this.transform.position;
-                    spawned.GetComponent<AutoDestroy>().NetSpawn();
+                    IsDead = true;
 
-                    Destroy(this.gameObject);
+                    if (ExplodeUponDeath)
+                    {
+                        var spawned = PoolObject.Spawn(Spawnables.Get<PoolObject>("ExplosionEffect"));
+                        spawned.transform.position = this.transform.position;
+                        spawned.GetComponent<AutoDestroy>().NetSpawn();
+
+                        Destroy(this.gameObject);
+                    }                    
                 }
             }
         }

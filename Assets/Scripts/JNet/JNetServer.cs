@@ -29,6 +29,7 @@ namespace JNetworking
         public Action<RemoteClient> UponConnection;
         /// <summary>
         /// Called when a client connection is ended.
+        /// Parameters are the client that disconnected and the reason for disconnection.
         /// </summary>
         public Action<RemoteClient, string> UponDisconnection;
 
