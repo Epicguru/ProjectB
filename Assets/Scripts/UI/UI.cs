@@ -116,10 +116,22 @@ namespace ProjectB.Interface
             set
             {
                 if (anchour != value)
+                {
+                    oldAnchour = anchour;
                     anchour = value;
+                }
             }
         }
         private static TextAnchor anchour = TextAnchor.UpperLeft;
+        private static TextAnchor oldAnchour = TextAnchor.UpperLeft;
+
+        /// <summary>
+        /// Swaps the <see cref="Alignment"/> back to the previous value.
+        /// </summary>
+        public static void PreviousAlignment()
+        {
+            Alignment = oldAnchour;
+        }
 
         public static bool Button(Rect pos, GUIContent content)
         {

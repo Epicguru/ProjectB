@@ -6,7 +6,7 @@ namespace ThreadedPathfinding.Internal
 {
     public class Pathfinding
     {
-        public const int MAX = 1000;
+        public const int MAX = 5500;
         public const float DIAGONAL_DST = 1.41421356237f;
 
         private FastPriorityQueue<PNode> open = new FastPriorityQueue<PNode>(MAX);

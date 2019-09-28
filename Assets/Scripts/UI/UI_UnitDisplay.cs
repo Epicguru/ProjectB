@@ -42,57 +42,39 @@ namespace ProjectB.Interface
             if (units.Count == 0)
                 return;
 
-            if(units.Count == 1)
+            UI.Label($"Selected: {(units.Count == 1 ? units[0].Name : (units.Count + " units"))}.");
+            UI.Label("Available actions:");
+
+            scrollPos = GUILayout.BeginScrollView(scrollPos, GUILayout.ExpandHeight(false));
+
+            int index = 0;
+            foreach (var action in units.Count != 1 ? UnitAction.CompileRunnableActionList(units) : units[0].GetAllRunnableActions())
             {
-                // Only one selected.
-                var unit = units[0];
-
-                UI.Label($"Selected: {unit.Name}");
-                UI.Label("Available actions:");
-
-                scrollPos = GUILayout.BeginScrollView(scrollPos, GUILayout.MaxHeight(300));
-
-                int index = 0;
-                foreach (var action in unit.GetAllRunnableActions())
-                {                    
-                    if(UI.Button($"{action.Name} [{ActionKeys.Get(index)}]") || Input.GetKeyDown(ActionKeys.Get(index)))
-                    {
-                        unit.RunAction(action.ID);
-                    }
-                    index++;
-                }
-
-                GUILayout.EndScrollView();
-
-                DisplaySingleUnit(unit);
-            }
-            else
-            {
-                // Multiple selected.
-                UI.Label($"Selected {units.Count} units.");
-                UI.Label("Available actions:");
-
-                scrollPos = GUILayout.BeginScrollView(scrollPos);
-
-                var actions = UnitAction.CompileRunnableActionList(units);
-                int index = 0;
-                foreach (var action in actions)
+                if (UI.Button($"{action.Name} [{ActionKeys.Get(index)}]") || Input.GetKeyDown(ActionKeys.Get(index)))
                 {
-                    if (UI.Button($"{action.Name} [{ActionKeys.Get(index)}]") || Input.GetKeyDown(ActionKeys.Get(index)))
+                    if(units.Count == 1)
+                    {
+                        units[0].RunAction(action.ID);
+                    }
+                    else
                     {
                         foreach (var unit in units)
                         {
-                            // Try to run the action on all units.
                             unit.RunAction(action.ID);
                         }
                     }
-                    index++;
                 }
-
-                GUILayout.EndScrollView();
+                index++;
             }
+
+            GUILayout.EndScrollView();
+
+            if(units.Count == 1)
+                DisplaySingleUnit(units[0]);
         }
+
         private Vector2 scrollPos;
+        private Vector2 scrollPos2;
 
         private void DisplaySingleUnit(Unit unit)
         {
@@ -106,6 +88,21 @@ namespace ProjectB.Interface
                     target = vehicle.Nav.CurrentTargetPos.ToString();
                 UI.Label($"Moving to: {target}");
             }
+
+            scrollPos2 = GUILayout.BeginScrollView(scrollPos2, GUILayout.ExpandHeight(false));
+            foreach (var part in unit.Health.GetAllHealthParts())
+            {
+                GUILayout.BeginHorizontal();
+                UI.Label($"{part.Name}: ", GUILayout.Width(Width * 0.5f));
+
+                UI.Alignment = TextAnchor.UpperRight;
+                float p = part.Health / part.MaxHealth;
+                UI.Label($"{p*100f:F0}%".InColour(p >= 0.75f ? Color.green : p > 0.40f ? Color.yellow : Color.red).InBold());
+                UI.PreviousAlignment();
+
+                GUILayout.EndHorizontal();
+            }
+            GUILayout.EndScrollView();
         }
     }
 }

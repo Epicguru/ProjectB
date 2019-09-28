@@ -108,6 +108,10 @@ namespace JNetworking
         }
         private NetObject _no;
 
+        /// <summary>
+        /// Returns true when on server or on a client with local ownership. See <see cref="HasLocalOwnership"/>.
+        /// Having this authority allows for CMDs to be sent.
+        /// </summary>
         public bool HasAuthority
         {
             get
@@ -116,6 +120,10 @@ namespace JNetworking
             }
         }
 
+        /// <summary>
+        /// True if the local client has ownership of this object. False if the local client is null or doesn't have ownership.
+        /// Call <see cref="JNet.SetOwner(NetObject, NetConnection)"/> when on the server to assign ownership to a particular client.
+        /// </summary>
         public bool HasLocalOwnership
         {
             get

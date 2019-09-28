@@ -13,7 +13,7 @@ namespace ProjectB
         private const string BOLD_START = "<b>", BOLD_END = "</b>";
         private const string ITALICS_START = "<i>", ITALICS_END = "</i>";
 
-        public static string InColour(string text, Color colour)
+        public static string InColour(this string text, Color colour)
         {
             str.Clear();
             str.Append(COLOUR_START);
@@ -26,7 +26,7 @@ namespace ProjectB
             return str.ToString();
         }
 
-        public static string InSize(string text, float size)
+        public static string InSize(this string text, float size)
         {
             str.Clear();
             str.Append(SIZE_START);
@@ -38,7 +38,7 @@ namespace ProjectB
             return str.ToString();
         }
 
-        public static string InBold(string text)
+        public static string InBold(this string text)
         {
             str.Clear();
             str.Append(BOLD_START);
@@ -48,7 +48,7 @@ namespace ProjectB
             return str.ToString();
         }
 
-        public static string InItalics(string text)
+        public static string InItalics(this string text)
         {
             str.Clear();
             str.Append(ITALICS_START);
@@ -58,7 +58,7 @@ namespace ProjectB
             return str.ToString();
         }
 
-        public static string Highlight(string text, string part, Color colour, bool bold = false)
+        public static string Highlight(this string text, string part, Color colour, bool bold = false)
         {
             if (string.IsNullOrWhiteSpace(text))
                 return text;

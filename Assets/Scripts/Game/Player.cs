@@ -1,6 +1,8 @@
 ﻿
 using JNetworking;
+using ProjectB.Interface;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace ProjectB
 {
@@ -17,14 +19,34 @@ namespace ProjectB
         [SyncVar]
         public long Money;
 
-        private void Awake()
+        public Texture DollarSignTexture;
+
+        private void Start()
         {
             AllPlayers.Add(this);
+
+            if (HasLocalOwnership)
+            {
+                UI.AddDrawer(DrawUI);
+            }
         }
 
         private void OnDestroy()
         {
             AllPlayers.Remove(this);
+        }
+
+        public string FormatMoneyString()
+        {
+            return $"{Money} $";
+        }
+
+        private void DrawUI()
+        {
+            // Should go to top left.
+
+            UI.Label($"Connected as {Name}");
+            UI.Label(new GUIContent($"Money: {FormatMoneyString()}", DollarSignTexture));
         }
     }
 }

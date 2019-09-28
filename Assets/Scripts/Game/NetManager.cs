@@ -89,7 +89,8 @@ namespace ProjectB
                 // Assign the player object reference to the remote data.
                 client.Data = player;
 
-                JNet.Spawn(player); // TODO - Should I spawn it owned by the client?
+                // Spawn with local client authority.
+                JNet.Spawn(player, client.Connection);
             };
             JNet.GetServer().UponDisconnection = (client, reason) =>
             {

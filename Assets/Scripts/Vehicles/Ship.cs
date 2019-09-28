@@ -110,9 +110,6 @@ namespace ProjectB.Vehicles
             Vehicle.Body.angularVelocity = 0f;
             transform.position = dock.GetEntrancePos();
             transform.right = dock.GetEntranceDirection();
-
-            // URGTODO left off here
-            // place the ship in the correct slot and keep it there by disabling Movement class.
         }
 
         /// <summary>

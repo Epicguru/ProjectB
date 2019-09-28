@@ -22,6 +22,8 @@ namespace ProjectB.Buildings
         public Health Health { get { return Unit.Health; } }
         public string Name { get { return Unit.Name; } }
 
+        public Sprite PreviewSprite;
+        public Transform Graphics;
         public RectInt Position;
         
         public void GoToPosition()
