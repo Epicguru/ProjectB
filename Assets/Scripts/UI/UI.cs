@@ -181,6 +181,16 @@ namespace ProjectB.Interface
             style.alignment = old;
         }
 
+        public static void Box(string content, params GUILayoutOption[] options)
+        {
+            Box(new GUIContent(content), options);
+        }
+
+        public static void Box(GUIContent content, params GUILayoutOption[] options)
+        {
+            GUILayout.Box(content, options);
+        }
+
         #endregion
     }
 

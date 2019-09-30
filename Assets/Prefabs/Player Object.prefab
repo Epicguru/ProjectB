@@ -46,6 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: 
   Money: 0
+  DollarSignTexture: {fileID: 2800000, guid: 509ff3a41baad2c4c8e8166fa8b007b1, type: 3}
 --- !u!114 &832368105360307851
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -58,4 +59,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e23d43253c92984297eda43a188c792, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _prefabID: 0
+  _prefabID: 7

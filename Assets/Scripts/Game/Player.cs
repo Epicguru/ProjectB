@@ -19,6 +19,10 @@ namespace ProjectB
         [SyncVar]
         public long Money;
 
+        [Header("UI")]
+        public Color MoneyPositiveColour = Color.green;
+        public Color MoneyNegativeColour = Color.red;
+
         public Texture DollarSignTexture;
 
         private void Start()
@@ -46,7 +50,7 @@ namespace ProjectB
             // Should go to top left.
 
             UI.Label($"Connected as {Name}");
-            UI.Label(new GUIContent($"Money: {FormatMoneyString()}", DollarSignTexture));
+            UI.Box(new GUIContent($"{"Money".InColour(Color.black)}: {FormatMoneyString().InColour(Money > 0 ? MoneyPositiveColour: MoneyNegativeColour).InBold()}", DollarSignTexture));
         }
     }
 }
