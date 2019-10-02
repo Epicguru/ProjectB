@@ -23,17 +23,15 @@ namespace ProjectB.Buildings
         public string Name { get { return Unit.Name; } }
 
         public Sprite PreviewSprite;
-        public Transform Graphics;
-        public RectInt Position;
-        
-        public void GoToPosition()
-        {
-            transform.position = new Vector3(Position.x, Position.y);
-        }
 
-        private void Start()
+        private void GL_DrawUnitSelected(Color color)
         {
-            GoToPosition();
+            Vector2[] points = Unit.SelectionCollider.GetWorldCorners();
+
+            GameCamera.DrawLine(points[0], points[1], color);
+            GameCamera.DrawLine(points[1], points[2], color);
+            GameCamera.DrawLine(points[2], points[3], color);
+            GameCamera.DrawLine(points[3], points[0], color);
         }
     }
 }
