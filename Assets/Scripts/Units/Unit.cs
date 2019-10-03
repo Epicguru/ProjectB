@@ -1,12 +1,15 @@
 ﻿
+using ProjectB.Units.Actions;
 using ProjectB.Vehicles;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace ProjectB.Units
 {
     [RequireComponent(typeof(Health))]
-    public partial class Unit : MonoBehaviour
+    public class Unit : MonoBehaviour, IActionProvider
     {
         public static readonly List<Unit> AllActiveUnits = new List<Unit>();
         
@@ -50,6 +53,8 @@ namespace ProjectB.Units
         public BoxCollider2D SelectionCollider;
         public bool IsSelected;
 
+        [NonSerialized]
+        public readonly List<IActionProvider> ActionProviders = new List<IActionProvider>();
         public bool IsVehicle { get { return Vehicle != null; } }
         public bool IsDead { get { return Health; } }
 
@@ -77,6 +82,7 @@ namespace ProjectB.Units
         private void Awake()
         {
             AllActiveUnits.Add(this);
+            ActionProviders.Add(this);
 
             if (SelectionCollider == null)
             {
@@ -89,6 +95,34 @@ namespace ProjectB.Units
             }
             if(SelectionCollider != null)
                 SelectionCollider.gameObject.layer = 10;
+        }
+
+        public IEnumerable<UnitAction> GetActions(Unit unit)
+        {
+            yield return new UnitAction("xpld", "Explode", (u, args) =>
+            {
+                u.Health.ChangeHealth(u.Health.GetHealthPart(HealthPartID.HULL).Collider, -10000);
+                return null;
+            });
+        }
+
+        /// <summary>
+        /// Gets all actions provided by this unit's <see cref="ActionProviders"/> list.
+        /// Can be fairly expensive, so cache the result as an array.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<UnitAction> GetAllActions()
+        {
+            foreach (var provider in ActionProviders)
+            {
+                if (provider == null)
+                    continue;
+
+                foreach (var action in provider.GetActions(this))
+                {
+                    yield return action;
+                }
+            }
         }
 
         /// <summary>

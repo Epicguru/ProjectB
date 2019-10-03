@@ -21,7 +21,6 @@ namespace ProjectB
 
             // TODO move to somewhere more sensible, such as 'game manager'
             Spawnables.NetRegisterAll();
-            ActionLoader.LoadAndRegisterLocal();
 
             UI.AddDrawer(DrawUI);
         }

@@ -48,19 +48,27 @@ namespace ProjectB.Interface
             scrollPos = GUILayout.BeginScrollView(scrollPos, GUILayout.ExpandHeight(false));
 
             int index = 0;
-            foreach (var action in units.Count != 1 ? UnitAction.CompileRunnableActionList(units) : units[0].GetAllRunnableActions())
+            foreach (var action in units.Count != 1 ? UnitAction.MergeActions(units) : units[0].GetAllActions())
             {
                 if (UI.Button($"{action.Name} [{ActionKeys.Get(index)}]") || Input.GetKeyDown(ActionKeys.Get(index)))
                 {
                     if(units.Count == 1)
                     {
-                        units[0].RunAction(action.ID);
+                        string error = action.Run(units[0], null);
+                        if(error != null)
+                        {
+                            Debug.LogWarning($"Action error: {error}");
+                        }
                     }
                     else
                     {
                         foreach (var unit in units)
                         {
-                            unit.RunAction(action.ID);
+                            string error = action.Run(unit, null);
+                            if(error != null)
+                            {
+                                Debug.LogWarning($"Action error: {error}");
+                            }
                         }
                     }
                 }
